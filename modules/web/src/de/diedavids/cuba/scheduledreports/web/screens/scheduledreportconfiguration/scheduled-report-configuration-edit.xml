@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        caption="msg://editorCaption"
+        focusComponent="form"
+        messagesPack="de.diedavids.cuba.scheduledreports.web.screens.scheduledreportconfiguration">
+    <data>
+        <instance id="scheduledReportConfigurationDc"
+                  class="de.diedavids.cuba.scheduledreports.entity.ScheduledReportConfiguration"
+                  view="scheduledReportConfiguration-view">
+            <loader/>
+        </instance>
+    </data>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="editActions" spacing="true">
+        <form id="form" dataContainer="scheduledReportConfigurationDc" childrenCaptionWidth="200px">
+            <column width="250px">
+                <pickerField id="reportField" property="report">
+                    <actions>
+                        <action id="lookup" type="picker_lookup"/>
+                        <action id="clear" type="picker_clear"/>
+                    </actions>
+                </pickerField>
+                <textField id="nameField" property="name"/>
+                <textField id="codeField" property="code"/>
+                <checkBox id="activeField" property="active"/>
+                <optionsGroup
+                        id="frequencyTypeField"
+                        property="frequency.frequency"
+                        dataContainer="scheduledReportConfigurationDc"
+                />
+
+                <hbox
+                        caption="msg://day"
+                        id="monthlyDayFields"
+                        spacing="true"
+                        width="100%"
+                        visible="false">
+                    <lookupField
+                            id="monthlyDayField"
+                            property="frequency.monthlyDay"
+                            dataContainer="scheduledReportConfigurationDc"
+                            width="60px"/>
+                </hbox>
+
+                <hbox
+                        caption="msg://time"
+                        id="monthlyTimeFields"
+                        spacing="true"
+                        width="100%"
+                        expand="expandMonthlyTimeFields"
+                        visible="false">
+
+                    <lookupField
+                            id="monthlyHourField"
+                            property="frequency.monthlyHour"
+                            dataContainer="scheduledReportConfigurationDc"
+                            width="60px"/>
+                    <label value=":" />
+                    <lookupField
+                            id="monthlyMinuteField"
+                            property="frequency.monthlyMinute"
+                            dataContainer="scheduledReportConfigurationDc"
+                            width="60px"/>
+                    <label  id="expandMonthlyTimeFields" value="" />
+                </hbox>
+                <hbox
+                        caption="msg://time"
+                        id="dailyTimeFields"
+                        spacing="true"
+                        visible="false"
+                        expand="expandDailyTimeFields">
+                    <lookupField
+                            id="dailyHourField"
+                            property="frequency.dailyHour"
+                            dataContainer="scheduledReportConfigurationDc"
+                            width="60px"/>
+                    <label value=":" />
+                    <lookupField
+                            id="dailyMinuteField"
+                            property="frequency.dailyMinute"
+                            dataContainer="scheduledReportConfigurationDc"
+                            width="60px"/>
+                    <label  id="expandDailyTimeFields" value="" />
+                </hbox>
+
+                <hbox
+                        id="hourlyTimeFields"
+                        caption="msg://minute"
+                        spacing="true"
+                        width="100%"
+                        expand="expandHourlyTimeFields"
+                        visible="false">
+                    <lookupField
+                            id="hourlyMinuteField"
+                            property="frequency.hourlyMinute"
+                            dataContainer="scheduledReportConfigurationDc"
+                            width="60px"/>
+                    <label  id="expandHourlyTimeFields" value="" />
+                </hbox>
+                <hbox
+                        id="customFields"
+                        caption="msg://cronExpression"
+                        spacing="true"
+                        width="100%"
+                        visible="false">
+                    <textField
+                            id="customCronField"
+                            property="frequency.customCron"
+                            dataContainer="scheduledReportConfigurationDc"/>
+                </hbox>
+            </column>
+        </form>
+
+
+
+        <hbox id="editActions" spacing="true">
+            <button action="windowCommitAndClose"/>
+            <button action="windowClose"/>
+            <button id="testCronExpressionBtn" caption="msg://testCronExpression"/>
+        </hbox>
+    </layout>
+</window>

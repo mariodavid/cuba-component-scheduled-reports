@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        caption="msg://editorCaption"
+        focusComponent="form"
+        messagesPack="de.diedavids.cuba.scheduledreports.web.screens.scheduledreportexecution">
+    <data>
+        <instance id="scheduledReportExecutionDc"
+                  class="de.diedavids.cuba.scheduledreports.entity.ScheduledReportExecution"
+                  view="scheduledReportExecution-view">
+            <loader/>
+        </instance>
+    </data>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="editActions" spacing="true">
+        <form id="form" dataContainer="scheduledReportExecutionDc">
+            <column width="250px">
+                <pickerField id="configField" property="config">
+                    <actions>
+                        <action id="lookup" type="picker_lookup"/>
+                        <action id="clear" type="picker_clear"/>
+                    </actions>
+                </pickerField>
+                <checkBox id="successfulField" property="successful"/>
+                <dateField id="executedAtField" property="executedAt"/>
+                <upload id="reportFileField" fileStoragePutMode="IMMEDIATE" property="reportFile" showFileName="true"/>
+            </column>
+        </form>
+        <hbox id="editActions" spacing="true">
+            <button action="windowCommitAndClose"/>
+            <button action="windowClose"/>
+        </hbox>
+    </layout>
+</window>

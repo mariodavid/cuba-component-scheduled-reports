@@ -1,0 +1,1 @@
+drop table DDCSR_SCHEDULED_REPORT_CONFIGURATION__U79810 if exists cascade ;

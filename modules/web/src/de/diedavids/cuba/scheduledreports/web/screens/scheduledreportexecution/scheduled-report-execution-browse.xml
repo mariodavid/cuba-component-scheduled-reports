@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        caption="msg://browseCaption"
+        focusComponent="scheduledReportExecutionsTable"
+        messagesPack="de.diedavids.cuba.scheduledreports.web.screens.scheduledreportexecution">
+    <data readOnly="true">
+        <collection id="scheduledReportExecutionsDc"
+                    class="de.diedavids.cuba.scheduledreports.entity.ScheduledReportExecution"
+                    view="scheduledReportExecution-view">
+            <loader id="scheduledReportExecutionsDl">
+                <query>
+                    <![CDATA[select e from ddcsr_ScheduledReportExecution e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="scheduledReportExecutionsTable"
+            spacing="true">
+        <filter id="filter"
+                applyTo="scheduledReportExecutionsTable"
+                dataLoader="scheduledReportExecutionsDl">
+            <properties include=".*"/>
+        </filter>
+        <groupTable id="scheduledReportExecutionsTable"
+                    width="100%"
+                    dataContainer="scheduledReportExecutionsDc">
+            <actions>
+                <action id="create" type="create"/>
+                <action id="edit" type="edit"/>
+                <action id="remove" type="remove"/>
+            </actions>
+            <columns>
+                <column id="config"/>
+                <column id="successful"/>
+                <column id="executedAt"/>
+                <column id="reportFile"/>
+            </columns>
+            <rowsCount/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+                <button id="createBtn" action="scheduledReportExecutionsTable.create"/>
+                <button id="editBtn" action="scheduledReportExecutionsTable.edit"/>
+                <button id="removeBtn" action="scheduledReportExecutionsTable.remove"/>
+            </buttonsPanel>
+        </groupTable>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>

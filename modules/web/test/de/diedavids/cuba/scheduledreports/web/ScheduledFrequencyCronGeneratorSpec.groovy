@@ -66,8 +66,8 @@ class ScheduledFrequencyCronGeneratorSpec extends Specification {
 
         where:
         monthlyDay | monthlyHour | monthlyMinute || expectedExpression
-        2           | 9           | 12            || "0 12 9 2 * *"
-        11          | 10          | 55            || "0 55 10 11 * *"
+        2          | 9           | 12            || "0 12 9 2 * *"
+        11         | 10          | 55            || "0 55 10 11 * *"
     }
 
 }

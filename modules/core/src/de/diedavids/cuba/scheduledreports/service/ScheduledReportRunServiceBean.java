@@ -2,12 +2,14 @@ package de.diedavids.cuba.scheduledreports.service;
 
 import com.haulmont.cuba.core.entity.FileDescriptor;
 import com.haulmont.cuba.core.global.DataManager;
+import com.haulmont.cuba.core.global.Events;
 import com.haulmont.cuba.core.global.TimeSource;
 import com.haulmont.reports.app.service.ReportService;
 import com.haulmont.reports.entity.Report;
 import de.diedavids.cuba.scheduledreports.core.ScheduledReportRepository;
 import de.diedavids.cuba.scheduledreports.entity.ScheduledReportConfiguration;
 import de.diedavids.cuba.scheduledreports.entity.ScheduledReportExecution;
+import de.diedavids.cuba.scheduledreports.events.ScheduledReportRun;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -26,8 +28,8 @@ public class ScheduledReportRunServiceBean implements ScheduledReportRunService 
     protected DataManager dataManager;
     @Inject
     protected TimeSource timeSource;
-
-
+    @Inject
+    protected Events events;
 
 
     @Override
@@ -44,8 +46,9 @@ public class ScheduledReportRunServiceBean implements ScheduledReportRunService 
 
         ScheduledReportExecution scheduledReportExecution = dataManager.create(ScheduledReportExecution.class);
 
+        FileDescriptor savedReport = null;
         try{
-            FileDescriptor savedReport = reportService.createAndSaveReport(report, Collections.emptyMap(), "my-file");
+            savedReport = reportService.createAndSaveReport(report, Collections.emptyMap(), "my-file");
             scheduledReportExecution.setReportFile(savedReport);
             scheduledReportExecution.setSuccessful(true);
         }
@@ -57,5 +60,7 @@ public class ScheduledReportRunServiceBean implements ScheduledReportRunService 
         scheduledReportExecution.setExecutedAt(timeSource.currentTimestamp());
 
         dataManager.commit(scheduledReportExecution);
+
+        events.publish(new ScheduledReportRun(this, savedReport, scheduledReportExecution));
     }
 }

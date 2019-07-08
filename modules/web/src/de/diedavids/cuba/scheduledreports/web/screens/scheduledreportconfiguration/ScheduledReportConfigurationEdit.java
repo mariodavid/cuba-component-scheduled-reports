@@ -46,10 +46,8 @@ public class ScheduledReportConfigurationEdit extends StandardEditor<ScheduledRe
     @Inject
     protected DataContext dataContext;
 
-
     @Inject
     protected LookupField<Integer> dailyHourField;
-
     @Inject
     protected LookupField<Integer> dailyMinuteField;
     @Inject
@@ -71,8 +69,6 @@ public class ScheduledReportConfigurationEdit extends StandardEditor<ScheduledRe
     protected HBoxLayout monthlyDayFields;
     @Inject
     protected HBoxLayout customFields;
-    @Inject
-    protected Notifications notifications;
     @Inject
     protected ScheduledFrequencyCronGenerator scheduledFrequencyCronGenerator;
 
@@ -129,13 +125,12 @@ public class ScheduledReportConfigurationEdit extends StandardEditor<ScheduledRe
     }
 
     private List<Integer> intRange(int from, int to) {
-        return range(from, to + 1   ).boxed().collect(Collectors.toList());
+        return range(from, to + 1).boxed().collect(Collectors.toList());
     }
 
 
     @Subscribe
     protected void onBeforeCommitChanges(BeforeCommitChangesEvent event) {
-
 
 
         ScheduledReportConfiguration config = getEditedEntity();
@@ -163,7 +158,6 @@ public class ScheduledReportConfigurationEdit extends StandardEditor<ScheduledRe
     }
 
     private String getCronExpression(ScheduledReportConfiguration config) {
-
         return scheduledFrequencyCronGenerator.createCronExpression(config.getFrequency());
     }
 
@@ -171,23 +165,5 @@ public class ScheduledReportConfigurationEdit extends StandardEditor<ScheduledRe
     private ScheduledTask createOne() {
         return dataContext.create(ScheduledTask.class);
     }
-
-    @Subscribe("testCronExpressionBtn")
-    protected void onTestCronExpressionBtnClick(Button.ClickEvent event) {
-        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(SPRING);
-        CronParser parser = new CronParser(cronDefinition);
-
-        // and then just ask for a description
-        CronDescriptor descriptor = CronDescriptor.instance(Locale.US);// we support multiple languages! Just pick one!
-        String cronExpression = getCronExpression(getEditedEntity());
-        String quartzBuiltCronExpressionDescription = descriptor.describe(parser.parse(cronExpression));
-        notifications.create(Notifications.NotificationType.TRAY)
-                .withCaption(quartzBuiltCronExpressionDescription)
-        .show();
-    }
-
-
-
-    
 
 }

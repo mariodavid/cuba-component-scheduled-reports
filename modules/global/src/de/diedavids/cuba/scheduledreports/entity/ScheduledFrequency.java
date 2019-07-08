@@ -1,12 +1,16 @@
 package de.diedavids.cuba.scheduledreports.entity;
 
 import com.haulmont.chile.core.annotations.MetaClass;
+import com.haulmont.chile.core.annotations.NamePattern;
 import com.haulmont.cuba.core.entity.EmbeddableEntity;
+import com.haulmont.cuba.core.global.AppBeans;
+import com.haulmont.cuba.core.global.Messages;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
+@NamePattern("#caption|frequency,hourlyMinute,dailyMinute,dailyHour,monthlyDay,monthlyHour,monthlyMinute,customCron")
 @Embeddable
 @MetaClass(name = "ddcsr_ScheduledFrequency")
 public class ScheduledFrequency extends EmbeddableEntity {
@@ -99,5 +103,67 @@ public class ScheduledFrequency extends EmbeddableEntity {
 
     public void setFrequency(ScheduledFrequencyType frequency) {
         this.frequency = frequency == null ? null : frequency.getId();
+    }
+
+
+    public String caption() {
+
+        switch (getFrequency()) {
+            case DAILY: return dailyCaption();
+            case HOURLY: return hourlyCaption();
+            case MONTHLY: return monthlyCaption();
+            case CUSTOM: return customCaption();
+        }
+        return getFrequency().toString();
+    }
+
+    private String customCaption() {
+        return getMessages()
+                .formatMessage(
+                        this.getClass(),
+                        "customFrequencyCaption",
+                        customCron
+                );
+    }
+
+    private String monthlyCaption() {
+        String monthlyDayString = String.format("%d", monthlyDay);
+        String monthlyHourString = String.format("%02d", monthlyHour);
+        String monthlyMinuteString = String.format("%02d", monthlyMinute);
+        return getMessages()
+                .formatMessage(
+                        this.getClass(),
+                        "monthlyFrequencyCaption",
+                        monthlyDayString,
+                        monthlyHourString,
+                        monthlyMinuteString
+                );
+    }
+
+    private String hourlyCaption() {
+        String hourlyMinuteString = String.format("%d", hourlyMinute);
+        return getMessages()
+                .formatMessage(
+                        this.getClass(),
+                        "hourlyFrequencyCaption",
+                        hourlyMinuteString
+                );
+    }
+
+    private String dailyCaption() {
+        String dailyHourString = String.format("%02d", dailyHour);
+        String dailyMinuteString = String.format("%02d", dailyMinute);
+        return getMessages()
+                .formatMessage(
+                        this.getClass(),
+                        "dailyFrequencyCaption",
+                        dailyHourString,
+                        dailyMinuteString
+                );
+
+    }
+
+    private Messages getMessages() {
+        return AppBeans.get(Messages.class);
     }
 }

@@ -1,8 +1,11 @@
 package de.diedavids.cuba.scheduledreports.web.screens.scheduledreportconfiguration;
 
+import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.Cron;
+import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.field.value.SpecialChar;
+import com.cronutils.parser.CronParser;
 import com.google.common.collect.Lists;
 import com.haulmont.cuba.core.app.scheduled.MethodParameterInfo;
 import com.haulmont.cuba.core.entity.ScheduledTask;
@@ -18,15 +21,18 @@ import com.haulmont.cuba.gui.screen.*;
 import de.diedavids.cuba.scheduledreports.entity.ScheduledFrequency;
 import de.diedavids.cuba.scheduledreports.entity.ScheduledReportConfiguration;
 import de.diedavids.cuba.scheduledreports.entity.ScheduledFrequencyType;
+import de.diedavids.cuba.scheduledreports.web.ScheduledFrequencyCronGenerator;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import static com.cronutils.builder.CronBuilder.cron;
 import static com.cronutils.model.CronType.QUARTZ;
 
+import static com.cronutils.model.CronType.SPRING;
 import static com.cronutils.model.field.expression.FieldExpressionFactory.*;
 import static java.util.stream.IntStream.range;
 
@@ -67,6 +73,8 @@ public class ScheduledReportConfigurationEdit extends StandardEditor<ScheduledRe
     protected HBoxLayout customFields;
     @Inject
     protected Notifications notifications;
+    @Inject
+    protected ScheduledFrequencyCronGenerator scheduledFrequencyCronGenerator;
 
 
     @Subscribe("frequencyTypeField")
@@ -132,7 +140,7 @@ public class ScheduledReportConfigurationEdit extends StandardEditor<ScheduledRe
 
         ScheduledReportConfiguration config = getEditedEntity();
 
-        Cron cron = getCronExpression(config);
+        String cronExpression = getCronExpression(config);
         ScheduledTask scheduledTask = config.getScheduledTask() == null ? createOne() : config.getScheduledTask();
 
         scheduledTask.setActive(config.getActive());
@@ -144,7 +152,7 @@ public class ScheduledReportConfigurationEdit extends StandardEditor<ScheduledRe
                 new MethodParameterInfo("java.lang.String", "code", config.getCode())
         );
         scheduledTask.updateMethodParameters(parameter);
-        scheduledTask.setCron(cron.asString());
+        scheduledTask.setCron(cronExpression);
         scheduledTask.setLogStart(true);
         scheduledTask.setLogFinish(true);
         scheduledTask.setSchedulingType(SchedulingType.CRON);
@@ -154,41 +162,11 @@ public class ScheduledReportConfigurationEdit extends StandardEditor<ScheduledRe
 
     }
 
-    private Cron getCronExpression(ScheduledReportConfiguration config) {
+    private String getCronExpression(ScheduledReportConfiguration config) {
 
-        switch (config.getFrequency().getFrequency()) {
-            case DAILY: return getDailyCronExpression(config.getFrequency());
-            case MONTHLY: return getMonthlyCronExpression(config.getFrequency());
-            case HOURLY: return getHourlyCronExpression(config.getFrequency());
-            case CUSTOM: return getCustomCronExpression(config.getFrequency());
-        }
-
-        return null;
+        return scheduledFrequencyCronGenerator.createCronExpression(config.getFrequency());
     }
 
-    private Cron getCustomCronExpression(ScheduledFrequency frequency) {
-        return null;
-    }
-
-    private Cron getHourlyCronExpression(ScheduledFrequency frequency) {
-
-        return cron(CronDefinitionBuilder.instanceDefinitionFor(QUARTZ))
-                .withYear(always())
-                .withMonth(always())
-                .withDoM(questionMark())
-                .withHour(always())
-                .withMinute(on(frequency.getHourlyMinute()))
-                .withSecond(on(0))
-                .instance();
-    }
-
-    private Cron getMonthlyCronExpression(ScheduledFrequency frequency) {
-        return null;
-    }
-
-    private Cron getDailyCronExpression(ScheduledFrequency frequency) {
-        return null;
-    }
 
     private ScheduledTask createOne() {
         return dataContext.create(ScheduledTask.class);
@@ -196,11 +174,16 @@ public class ScheduledReportConfigurationEdit extends StandardEditor<ScheduledRe
 
     @Subscribe("testCronExpressionBtn")
     protected void onTestCronExpressionBtnClick(Button.ClickEvent event) {
-        String cronExpression = getCronExpression(getEditedEntity()).asString();
-        notifications.create(Notifications.NotificationType.TRAY)
-                .withCaption(cronExpression)
-        .show();
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(SPRING);
+        CronParser parser = new CronParser(cronDefinition);
 
+        // and then just ask for a description
+        CronDescriptor descriptor = CronDescriptor.instance(Locale.US);// we support multiple languages! Just pick one!
+        String cronExpression = getCronExpression(getEditedEntity());
+        String quartzBuiltCronExpressionDescription = descriptor.describe(parser.parse(cronExpression));
+        notifications.create(Notifications.NotificationType.TRAY)
+                .withCaption(quartzBuiltCronExpressionDescription)
+        .show();
     }
 
 

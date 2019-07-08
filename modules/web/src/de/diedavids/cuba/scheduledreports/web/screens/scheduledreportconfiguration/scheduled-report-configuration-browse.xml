@@ -30,6 +30,7 @@
                 <action id="create" type="create"/>
                 <action id="edit" type="edit"/>
                 <action id="remove" type="remove"/>
+                <action id="executions" caption="msg://executions" trackSelection="true"/>
             </actions>
             <columns>
                 <column id="report"/>
@@ -44,6 +45,7 @@
                 <button id="createBtn" action="scheduledReportConfigurationsTable.create"/>
                 <button id="editBtn" action="scheduledReportConfigurationsTable.edit"/>
                 <button id="removeBtn" action="scheduledReportConfigurationsTable.remove"/>
+                <button id="executionsBtn" action="scheduledReportConfigurationsTable.executions" />
             </buttonsPanel>
         </groupTable>
         <hbox id="lookupActions" spacing="true" visible="false">

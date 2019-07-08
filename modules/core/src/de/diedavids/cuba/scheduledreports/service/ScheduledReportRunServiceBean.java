@@ -45,6 +45,7 @@ public class ScheduledReportRunServiceBean implements ScheduledReportRunService 
         Report report = scheduledReportConfiguration.getReport();
 
         ScheduledReportExecution scheduledReportExecution = dataManager.create(ScheduledReportExecution.class);
+        scheduledReportExecution.setConfig(scheduledReportConfiguration);
 
         FileDescriptor savedReport = null;
         try{
@@ -56,7 +57,6 @@ public class ScheduledReportRunServiceBean implements ScheduledReportRunService 
             scheduledReportExecution.setSuccessful(false);
         }
 
-        scheduledReportExecution.setConfig(scheduledReportConfiguration);
         scheduledReportExecution.setExecutedAt(timeSource.currentTimestamp());
 
         dataManager.commit(scheduledReportExecution);

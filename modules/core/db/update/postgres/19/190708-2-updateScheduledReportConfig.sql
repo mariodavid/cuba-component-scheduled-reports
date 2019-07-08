@@ -1,0 +1,1 @@
+alter table DDCSR_SCHEDULED_REPORT_CONFIG add column REPORT_TEMPLATE_ID uuid ;

@@ -2,12 +2,18 @@
 <views xmlns="http://schemas.haulmont.com/cuba/view.xsd">
 
     <view entity="ddcsr_ScheduledReportConfiguration" name="scheduledReportConfiguration-view" extends="_local">
-        <property name="report" view="_minimal"/>
+        <property name="report" view="report.withTemplates" />
         <property name="scheduledTask" view="_local"/>
         <property name="frequency" view="_local"/>
+        <property name="reportTemplate" view="_local"/>
     </view>
     <view entity="ddcsr_ScheduledReportConfiguration" name="configuration-with-executions" extends="_local">
-        <property name="report" view="_minimal"/>
+        <property name="report" view="report.withTemplates">
+            <property name="defaultTemplate" view="_local" />
+        </property>
+        <property name="scheduledTask" view="_local"/>
+        <property name="frequency" view="_local"/>
+        <property name="reportTemplate" view="_local"/>
         <property name="executions" view="_base"/>
     </view>
     <view entity="ddcsr_ScheduledReportExecution" name="scheduledReportExecution-view" extends="_local">

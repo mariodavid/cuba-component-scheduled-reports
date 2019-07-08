@@ -6,6 +6,7 @@ import com.haulmont.cuba.core.global.Events;
 import com.haulmont.cuba.core.global.TimeSource;
 import com.haulmont.reports.app.service.ReportService;
 import com.haulmont.reports.entity.Report;
+import com.haulmont.reports.entity.ReportTemplate;
 import de.diedavids.cuba.scheduledreports.core.ScheduledReportRepository;
 import de.diedavids.cuba.scheduledreports.entity.ScheduledReportConfiguration;
 import de.diedavids.cuba.scheduledreports.entity.ScheduledReportExecution;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.Collections;
-import java.util.List;
 
 @Service(ScheduledReportRunService.NAME)
 public class ScheduledReportRunServiceBean implements ScheduledReportRunService {
@@ -35,7 +35,7 @@ public class ScheduledReportRunServiceBean implements ScheduledReportRunService 
     @Override
     public void runScheduledReport(String code) {
 
-        ScheduledReportConfiguration config = scheduledReportRepository.loadByCode(code);
+        ScheduledReportConfiguration config = scheduledReportRepository.loadByCode(code, "configuration-with-executions");
 
         runReport(config);
     }
@@ -44,12 +44,15 @@ public class ScheduledReportRunServiceBean implements ScheduledReportRunService 
 
         Report report = scheduledReportConfiguration.getReport();
 
+        ReportTemplate reportTemplate = scheduledReportConfiguration.getReportTemplate() != null ? scheduledReportConfiguration.getReportTemplate() : report.getDefaultTemplate();
+
+        String fileName = reportTemplate.getOutputNamePattern();
         ScheduledReportExecution scheduledReportExecution = dataManager.create(ScheduledReportExecution.class);
         scheduledReportExecution.setConfig(scheduledReportConfiguration);
 
         FileDescriptor savedReport = null;
         try{
-            savedReport = reportService.createAndSaveReport(report, Collections.emptyMap(), "my-file");
+            savedReport = reportService.createAndSaveReport(report, reportTemplate, Collections.emptyMap(), fileName);
             scheduledReportExecution.setReportFile(savedReport);
             scheduledReportExecution.setSuccessful(true);
         }

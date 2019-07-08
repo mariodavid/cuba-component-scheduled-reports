@@ -14,19 +14,11 @@ public class ScheduledReportRepository {
     @Inject
     protected DataManager dataManager;
 
-
-    public List<ScheduledReportConfiguration> loadActiveConfigurations() {
-        return dataManager.load(ScheduledReportConfiguration.class)
-                .query("select e from ddcsr_ScheduledReportConfiguration e where e.active = true")
-                .view("configuration-with-executions")
-                .list();
-    };
-
-    public ScheduledReportConfiguration loadByCode(String code) {
+    public ScheduledReportConfiguration loadByCode(String code, String view) {
         return dataManager.load(ScheduledReportConfiguration.class)
                 .query("select e from ddcsr_ScheduledReportConfiguration e where e.code = :code")
                 .parameter("code", code)
-                .view("configuration-with-executions")
+                .view(view)
                 .one();
     }
 }

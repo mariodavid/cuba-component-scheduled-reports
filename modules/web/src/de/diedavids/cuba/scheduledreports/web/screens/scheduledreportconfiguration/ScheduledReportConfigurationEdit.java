@@ -18,6 +18,8 @@ import com.haulmont.cuba.gui.components.HasValue;
 import com.haulmont.cuba.gui.components.LookupField;
 import com.haulmont.cuba.gui.model.DataContext;
 import com.haulmont.cuba.gui.screen.*;
+import com.haulmont.reports.entity.Report;
+import com.haulmont.reports.entity.ReportTemplate;
 import de.diedavids.cuba.scheduledreports.entity.ScheduledFrequency;
 import de.diedavids.cuba.scheduledreports.entity.ScheduledReportConfiguration;
 import de.diedavids.cuba.scheduledreports.entity.ScheduledFrequencyType;
@@ -27,6 +29,7 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.cronutils.builder.CronBuilder.cron;
@@ -59,6 +62,7 @@ public class ScheduledReportConfigurationEdit extends StandardEditor<ScheduledRe
     @Inject
     protected LookupField<Integer> monthlyMinuteField;
 
+
     @Inject
     protected HBoxLayout dailyTimeFields;
     @Inject
@@ -71,6 +75,14 @@ public class ScheduledReportConfigurationEdit extends StandardEditor<ScheduledRe
     protected HBoxLayout customFields;
     @Inject
     protected ScheduledFrequencyCronGenerator scheduledFrequencyCronGenerator;
+    @Inject
+    protected LookupField<ReportTemplate> reportTemplateLookupField;
+
+    @Subscribe("reportField")
+    protected void onReportFieldValueChange(HasValue.ValueChangeEvent<Report> event) {
+        List<ReportTemplate> templates = getEditedEntity().getReport().getTemplates();
+        reportTemplateLookupField.setOptionsList(templates);
+    }
 
 
     @Subscribe("frequencyTypeField")

@@ -28,6 +28,9 @@
                                 <action id="clear" type="picker_clear"/>
                             </actions>
                         </pickerField>
+                        <lookupField id="reportTemplateLookupField"
+                                     property="reportTemplate"
+                                     />
                         <textField id="nameField" property="name"/>
                         <textField id="codeField" property="code"/>
                         <checkBox id="activeField" property="active"/>

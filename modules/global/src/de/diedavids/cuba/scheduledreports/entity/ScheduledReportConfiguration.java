@@ -8,6 +8,7 @@ import com.haulmont.cuba.core.entity.annotation.EmbeddedParameters;
 import com.haulmont.cuba.core.entity.annotation.OnDelete;
 import com.haulmont.cuba.core.global.DeletePolicy;
 import com.haulmont.reports.entity.Report;
+import com.haulmont.reports.entity.ReportTemplate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -24,6 +25,10 @@ public class ScheduledReportConfiguration extends StandardEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "REPORT_ID")
     protected Report report;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "REPORT_TEMPLATE_ID")
+    protected ReportTemplate reportTemplate;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -112,5 +117,14 @@ public class ScheduledReportConfiguration extends StandardEntity {
 
     public void setScheduledTask(ScheduledTask scheduledTask) {
         this.scheduledTask = scheduledTask;
+    }
+
+
+    public ReportTemplate getReportTemplate() {
+        return reportTemplate;
+    }
+
+    public void setReportTemplate(ReportTemplate reportTemplate) {
+        this.reportTemplate = reportTemplate;
     }
 }

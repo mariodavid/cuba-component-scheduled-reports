@@ -1,6 +1,6 @@
 
 buildscript {
-    ext.cubaVersion = '7.0.7'
+    ext.cubaVersion = '7.0.8'
     repositories {
         mavenCentral()
         maven {
@@ -30,7 +30,7 @@ plugins {
 apply plugin: "com.github.kt3k.coveralls"
 
 
-def modulePrefix = 'app'
+def modulePrefix = 'scheduledreports'
 
 def globalModule = project(":${modulePrefix}-global")
 def coreModule = project(":${modulePrefix}-core")
@@ -213,6 +213,13 @@ configure(globalModule) {
             enabled = true
         }
     }
+
+    jar {
+        manifest {
+            attributes('App-Component-Id': cuba.artifact.group)
+            attributes('App-Component-Version': cuba.artifact.version + (cuba.artifact.isSnapshot ? '-SNAPSHOT' : ''))
+        }
+    }
 }
 
 configure(coreModule) {
@@ -273,7 +280,7 @@ configure(coreModule) {
     task createDb(dependsOn: assembleDbScripts, description: 'Creates local database', type: CubaDbCreation) {
         dbms = 'postgres'
         host = 'localhost'
-        dbName = 'ddcsr'
+        dbName = 'ddcsr2'
         dbUser = 'postgres'
         dbPassword = 'postgres'
     }
@@ -281,7 +288,7 @@ configure(coreModule) {
     task updateDb(dependsOn: assembleDbScripts, description: 'Updates local database', type: CubaDbUpdate) {
         dbms = 'postgres'
         host = 'localhost'
-        dbName = 'ddcsr'
+        dbName = 'ddcsr2'
         dbUser = 'postgres'
         dbPassword = 'postgres'
     }

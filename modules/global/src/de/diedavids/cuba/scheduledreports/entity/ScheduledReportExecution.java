@@ -14,8 +14,8 @@ public class ScheduledReportExecution extends StandardEntity {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "CONFIG_ID")
-    protected ScheduledReportConfiguration config;
+    @JoinColumn(name = "SCHEDULED_REPORT_ID")
+    protected ScheduledReport scheduledReport;
 
     @Column(name = "SUCCESSFUL_")
     protected Boolean successful;
@@ -28,6 +28,14 @@ public class ScheduledReportExecution extends StandardEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "REPORT_FILE_ID")
     protected FileDescriptor reportFile;
+
+    public ScheduledReport getScheduledReport() {
+        return scheduledReport;
+    }
+
+    public void setScheduledReport(ScheduledReport scheduledReport) {
+        this.scheduledReport = scheduledReport;
+    }
 
     public void setExecutedAt(Date executedAt) {
         this.executedAt = executedAt;
@@ -53,11 +61,4 @@ public class ScheduledReportExecution extends StandardEntity {
         this.successful = successful;
     }
 
-    public ScheduledReportConfiguration getConfig() {
-        return config;
-    }
-
-    public void setConfig(ScheduledReportConfiguration config) {
-        this.config = config;
-    }
 }

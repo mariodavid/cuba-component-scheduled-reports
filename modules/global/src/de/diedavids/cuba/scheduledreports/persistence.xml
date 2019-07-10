@@ -2,7 +2,7 @@
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
     <persistence-unit name="cuba-component-scheduled-reports" transaction-type="RESOURCE_LOCAL">
 
-        <class>de.diedavids.cuba.scheduledreports.entity.ScheduledReportConfiguration</class>
+        <class>de.diedavids.cuba.scheduledreports.entity.ScheduledReport</class>
         <class>de.diedavids.cuba.scheduledreports.entity.ScheduledReportExecution</class>
         <class>de.diedavids.cuba.scheduledreports.entity.ScheduledFrequency</class>
     </persistence-unit>

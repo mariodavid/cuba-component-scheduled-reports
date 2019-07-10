@@ -1,5 +1,5 @@
--- begin DDCSR_SCHEDULED_REPORT_CONFIG
-create table DDCSR_SCHEDULED_REPORT_CONFIG (
+-- begin DDCSR_SCHEDULED_REPORT
+create table DDCSR_SCHEDULED_REPORT (
     ID uuid,
     VERSION integer not null,
     CREATE_TS timestamp,
@@ -24,10 +24,11 @@ create table DDCSR_SCHEDULED_REPORT_CONFIG (
     NAME varchar(255) not null,
     CODE varchar(255),
     ACTIVE boolean,
+    PARAMETER_PROVIDER_BEAN varchar(255),
     --
     primary key (ID)
 )^
--- end DDCSR_SCHEDULED_REPORT_CONFIG
+-- end DDCSR_SCHEDULED_REPORT
 -- begin DDCSR_SCHEDULED_REPORT_EXEC
 create table DDCSR_SCHEDULED_REPORT_EXEC (
     ID uuid,
@@ -39,7 +40,7 @@ create table DDCSR_SCHEDULED_REPORT_EXEC (
     DELETE_TS timestamp,
     DELETED_BY varchar(50),
     --
-    CONFIG_ID uuid not null,
+    SCHEDULED_REPORT_ID uuid not null,
     SUCCESSFUL_ boolean,
     EXECUTED_AT date not null,
     REPORT_FILE_ID uuid,

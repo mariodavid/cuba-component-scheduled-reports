@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<app-component xmlns="http://schemas.haulmont.com/cuba/app-component.xsd"
+               dependsOn="com.haulmont.reports, com.haulmont.cuba">
+
+    <module name="global" blocks="*">
+        <artifact name="scheduledreports-global" appJar="true"/>
+
+        <property name="cuba.persistenceConfig" value="+de/diedavids/cuba/scheduledreports/persistence.xml"/>
+        <property name="cuba.metadataConfig" value="+de/diedavids/cuba/scheduledreports/metadata.xml"/>
+        <property name="cuba.viewsConfig" value="+de/diedavids/cuba/scheduledreports/views.xml"/>
+    </module>
+    <module name="core" dependsOn="global" blocks="core">
+        <artifact name="scheduledreports-core" appJar="true"/>
+        <artifact name="scheduledreports-core" classifier="db" ext="zip" configuration="dbscripts"/>
+
+        <property name="cuba.springContextConfig" value="+de/diedavids/cuba/scheduledreports/spring.xml"/>
+        <property name="cuba.mainMessagePack" value="+de.diedavids.cuba.scheduledreports.core"/>
+    </module>
+    <module name="web" dependsOn="global" blocks="web">
+        <artifact name="scheduledreports-web" appJar="true"/>
+        <artifact name="scheduledreports-web" classifier="web" ext="zip" configuration="webcontent"/>
+
+        <property name="cuba.springContextConfig" value="+de/diedavids/cuba/scheduledreports/web-spring.xml"/>
+        <property name="cuba.dispatcherSpringContextConfig"
+                  value="+de/diedavids/cuba/scheduledreports/web-dispatcher-spring.xml"/>
+        <property name="cuba.windowConfig" value="+de/diedavids/cuba/scheduledreports/web-screens.xml"/>
+        <property name="cuba.menuConfig" value="+de/diedavids/cuba/scheduledreports/web-menu.xml"/>
+        <property name="cuba.permissionConfig" value="+de/diedavids/cuba/scheduledreports/web-permissions.xml"/>
+        <property name="cuba.mainMessagePack" value="+de.diedavids.cuba.scheduledreports.web"/>
+    </module>
+</app-component>

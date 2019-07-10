@@ -15,9 +15,9 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @NamePattern("%s|name")
-@Table(name = "DDCSR_SCHEDULED_REPORT_CONFIG")
-@Entity(name = "ddcsr_ScheduledReportConfiguration")
-public class ScheduledReportConfiguration extends StandardEntity {
+@Table(name = "DDCSR_SCHEDULED_REPORT")
+@Entity(name = "ddcsr_ScheduledReport")
+public class ScheduledReport extends StandardEntity {
     private static final long serialVersionUID = 867426585502431134L;
 
 
@@ -60,8 +60,19 @@ public class ScheduledReportConfiguration extends StandardEntity {
 
     @Composition
     @OnDelete(DeletePolicy.CASCADE)
-    @OneToMany(mappedBy = "config")
+    @OneToMany(mappedBy = "scheduledReport")
     protected List<ScheduledReportExecution> executions;
+
+    @Column(name = "PARAMETER_PROVIDER_BEAN")
+    protected String parameterProviderBean;
+
+    public String getParameterProviderBean() {
+        return parameterProviderBean;
+    }
+
+    public void setParameterProviderBean(String parameterProviderBean) {
+        this.parameterProviderBean = parameterProviderBean;
+    }
 
     public ScheduledFrequency getFrequency() {
         return frequency;

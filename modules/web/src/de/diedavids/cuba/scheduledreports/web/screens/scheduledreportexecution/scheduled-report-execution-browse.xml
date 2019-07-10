@@ -32,7 +32,7 @@
                 <action id="remove" type="remove"/>
             </actions>
             <columns>
-                <column id="config"/>
+                <column id="scheduledReport"/>
                 <column id="successful"/>
                 <column id="executedAt"/>
                 <column id="reportFile"/>

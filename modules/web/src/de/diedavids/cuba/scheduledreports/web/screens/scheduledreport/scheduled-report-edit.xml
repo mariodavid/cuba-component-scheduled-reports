@@ -2,11 +2,11 @@
 <window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
         caption="msg://editorCaption"
         focusComponent="form"
-        messagesPack="de.diedavids.cuba.scheduledreports.web.screens.scheduledreportconfiguration">
+        messagesPack="de.diedavids.cuba.scheduledreports.web.screens.scheduledreport">
     <data>
-        <instance id="scheduledReportConfigurationDc"
-                  class="de.diedavids.cuba.scheduledreports.entity.ScheduledReportConfiguration"
-                  view="scheduledReportConfiguration-view">
+        <instance id="scheduledReportDc"
+                  class="de.diedavids.cuba.scheduledreports.entity.ScheduledReport"
+                  view="scheduledReport-view">
             <loader/>
         </instance>
     </data>
@@ -19,7 +19,7 @@
                       width="100%"
                       height="300px"
             >
-                <form id="form" dataContainer="scheduledReportConfigurationDc"
+                <form id="form" dataContainer="scheduledReportDc"
                       childrenCaptionWidth="150px">
                     <column width="250px">
                         <pickerField id="reportField" property="report">
@@ -30,32 +30,30 @@
                         </pickerField>
                         <lookupField id="reportTemplateLookupField"
                                      property="reportTemplate"
-                                     />
+                        />
                         <textField id="nameField" property="name"/>
                         <textField id="codeField" property="code"/>
                         <checkBox id="activeField" property="active"/>
+                        <textField id="parameterProviderBeanField" property="parameterProviderBean"/>
                     </column>
                 </form>
-
             </groupBox>
-
             <groupBox id="frequencyGroupBox"
                       caption="msg://frequency"
                       width="100%"
                       height="300px"
             >
                 <form id="frequencyForm"
-                      dataContainer="scheduledReportConfigurationDc"
+                      dataContainer="scheduledReportDc"
                       childrenCaptionWidth="150px"
                 >
                     <column width="400px">
                         <optionsGroup
                                 id="frequencyTypeField"
                                 property="frequency.frequency"
-                                dataContainer="scheduledReportConfigurationDc"
+                                dataContainer="scheduledReportDc"
                                 orientation="horizontal"
                         />
-
                         <hbox
                                 caption="msg://day"
                                 id="monthlyDayFields"
@@ -65,10 +63,9 @@
                             <lookupField
                                     id="monthlyDayField"
                                     property="frequency.monthlyDay"
-                                    dataContainer="scheduledReportConfigurationDc"
+                                    dataContainer="scheduledReportDc"
                                     width="60px"/>
                         </hbox>
-
                         <hbox
                                 caption="msg://time"
                                 id="monthlyTimeFields"
@@ -76,17 +73,16 @@
                                 width="100%"
                                 expand="expandMonthlyTimeFields"
                                 visible="false">
-
                             <lookupField
                                     id="monthlyHourField"
                                     property="frequency.monthlyHour"
-                                    dataContainer="scheduledReportConfigurationDc"
+                                    dataContainer="scheduledReportDc"
                                     width="60px"/>
                             <label value=":"/>
                             <lookupField
                                     id="monthlyMinuteField"
                                     property="frequency.monthlyMinute"
-                                    dataContainer="scheduledReportConfigurationDc"
+                                    dataContainer="scheduledReportDc"
                                     width="60px"/>
                             <label id="expandMonthlyTimeFields" value=""/>
                         </hbox>
@@ -99,17 +95,16 @@
                             <lookupField
                                     id="dailyHourField"
                                     property="frequency.dailyHour"
-                                    dataContainer="scheduledReportConfigurationDc"
+                                    dataContainer="scheduledReportDc"
                                     width="60px"/>
                             <label value=":"/>
                             <lookupField
                                     id="dailyMinuteField"
                                     property="frequency.dailyMinute"
-                                    dataContainer="scheduledReportConfigurationDc"
+                                    dataContainer="scheduledReportDc"
                                     width="60px"/>
                             <label id="expandDailyTimeFields" value=""/>
                         </hbox>
-
                         <hbox
                                 id="hourlyTimeFields"
                                 caption="msg://minute"
@@ -120,7 +115,7 @@
                             <lookupField
                                     id="hourlyMinuteField"
                                     property="frequency.hourlyMinute"
-                                    dataContainer="scheduledReportConfigurationDc"
+                                    dataContainer="scheduledReportDc"
                                     width="60px"/>
                             <label id="expandHourlyTimeFields" value=""/>
                         </hbox>
@@ -133,14 +128,12 @@
                             <textField
                                     id="customCronField"
                                     property="frequency.customCron"
-                                    dataContainer="scheduledReportConfigurationDc"/>
+                                    dataContainer="scheduledReportDc"/>
                         </hbox>
                     </column>
                 </form>
             </groupBox>
-
         </hbox>
-
         <hbox id="editActions" spacing="true">
             <button action="windowCommitAndClose"/>
             <button action="windowClose"/>

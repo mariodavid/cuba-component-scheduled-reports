@@ -1,18 +1,10 @@
-package de.diedavids.cuba.scheduledreports.web.screens.scheduledreportconfiguration;
+package de.diedavids.cuba.scheduledreports.web.screens.scheduledreport;
 
-import com.cronutils.descriptor.CronDescriptor;
-import com.cronutils.model.Cron;
-import com.cronutils.model.definition.CronDefinition;
-import com.cronutils.model.definition.CronDefinitionBuilder;
-import com.cronutils.model.field.value.SpecialChar;
-import com.cronutils.parser.CronParser;
 import com.google.common.collect.Lists;
 import com.haulmont.cuba.core.app.scheduled.MethodParameterInfo;
 import com.haulmont.cuba.core.entity.ScheduledTask;
 import com.haulmont.cuba.core.entity.ScheduledTaskDefinedBy;
 import com.haulmont.cuba.core.entity.SchedulingType;
-import com.haulmont.cuba.gui.Notifications;
-import com.haulmont.cuba.gui.components.Button;
 import com.haulmont.cuba.gui.components.HBoxLayout;
 import com.haulmont.cuba.gui.components.HasValue;
 import com.haulmont.cuba.gui.components.LookupField;
@@ -20,30 +12,22 @@ import com.haulmont.cuba.gui.model.DataContext;
 import com.haulmont.cuba.gui.screen.*;
 import com.haulmont.reports.entity.Report;
 import com.haulmont.reports.entity.ReportTemplate;
-import de.diedavids.cuba.scheduledreports.entity.ScheduledFrequency;
-import de.diedavids.cuba.scheduledreports.entity.ScheduledReportConfiguration;
+import de.diedavids.cuba.scheduledreports.entity.ScheduledReport;
 import de.diedavids.cuba.scheduledreports.entity.ScheduledFrequencyType;
 import de.diedavids.cuba.scheduledreports.web.ScheduledFrequencyCronGenerator;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.cronutils.builder.CronBuilder.cron;
-import static com.cronutils.model.CronType.QUARTZ;
-
-import static com.cronutils.model.CronType.SPRING;
-import static com.cronutils.model.field.expression.FieldExpressionFactory.*;
 import static java.util.stream.IntStream.range;
 
-@UiController("ddcsr_ScheduledReportConfiguration.edit")
-@UiDescriptor("scheduled-report-configuration-edit.xml")
-@EditedEntityContainer("scheduledReportConfigurationDc")
+@UiController("ddcsr_ScheduledReport.edit")
+@UiDescriptor("scheduled-report-edit.xml")
+@EditedEntityContainer("scheduledReportDc")
 @LoadDataBeforeShow
-public class ScheduledReportConfigurationEdit extends StandardEditor<ScheduledReportConfiguration> {
+public class ScheduledReportEdit extends StandardEditor<ScheduledReport> {
 
 
     @Inject
@@ -145,18 +129,18 @@ public class ScheduledReportConfigurationEdit extends StandardEditor<ScheduledRe
     protected void onBeforeCommitChanges(BeforeCommitChangesEvent event) {
 
 
-        ScheduledReportConfiguration config = getEditedEntity();
+        ScheduledReport scheduledReport = getEditedEntity();
 
-        String cronExpression = getCronExpression(config);
-        ScheduledTask scheduledTask = config.getScheduledTask() == null ? createOne() : config.getScheduledTask();
+        String cronExpression = getCronExpression(scheduledReport);
+        ScheduledTask scheduledTask = scheduledReport.getScheduledTask() == null ? createOne() : scheduledReport.getScheduledTask();
 
-        scheduledTask.setActive(config.getActive());
+        scheduledTask.setActive(scheduledReport.getActive());
         scheduledTask.setDefinedBy(ScheduledTaskDefinedBy.BEAN);
         scheduledTask.setBeanName("ddcsr_ScheduledReportRunService");
         scheduledTask.setMethodName("runScheduledReport");
 
         ArrayList<MethodParameterInfo> parameter = Lists.newArrayList(
-                new MethodParameterInfo("java.lang.String", "code", config.getCode())
+                new MethodParameterInfo("java.lang.String", "code", scheduledReport.getCode())
         );
         scheduledTask.updateMethodParameters(parameter);
         scheduledTask.setCron(cronExpression);
@@ -169,7 +153,7 @@ public class ScheduledReportConfigurationEdit extends StandardEditor<ScheduledRe
 
     }
 
-    private String getCronExpression(ScheduledReportConfiguration config) {
+    private String getCronExpression(ScheduledReport config) {
         return scheduledFrequencyCronGenerator.createCronExpression(config.getFrequency());
     }
 

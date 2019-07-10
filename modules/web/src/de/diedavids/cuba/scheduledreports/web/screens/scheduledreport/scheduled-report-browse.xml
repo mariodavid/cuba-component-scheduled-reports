@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
         caption="msg://browseCaption"
-        focusComponent="scheduledReportConfigurationsTable"
-        messagesPack="de.diedavids.cuba.scheduledreports.web.screens.scheduledreportconfiguration">
+        focusComponent="scheduledReportsTable"
+        messagesPack="de.diedavids.cuba.scheduledreports.web.screens.scheduledreport">
     <data readOnly="true">
-        <collection id="scheduledReportConfigurationsDc"
-                    class="de.diedavids.cuba.scheduledreports.entity.ScheduledReportConfiguration"
-                    view="scheduledReportConfiguration-view">
-            <loader id="scheduledReportConfigurationsDl">
+        <collection id="scheduledReportsDc"
+                    class="de.diedavids.cuba.scheduledreports.entity.ScheduledReport"
+                    view="scheduledReport-view">
+            <loader id="scheduledReportDl">
                 <query>
-                    <![CDATA[select e from ddcsr_ScheduledReportConfiguration e]]>
+                    <![CDATA[select e from ddcsr_ScheduledReport e]]>
                 </query>
             </loader>
         </collection>
     </data>
     <dialogMode height="600"
                 width="800"/>
-    <layout expand="scheduledReportConfigurationsTable"
+    <layout expand="scheduledReportsTable"
             spacing="true">
         <filter id="filter"
-                applyTo="scheduledReportConfigurationsTable"
-                dataLoader="scheduledReportConfigurationsDl">
+                applyTo="scheduledReportsTable"
+                dataLoader="scheduledReportDl">
             <properties include=".*"/>
         </filter>
-        <groupTable id="scheduledReportConfigurationsTable"
+        <groupTable id="scheduledReportsTable"
                     width="100%"
-                    dataContainer="scheduledReportConfigurationsDc">
+                    dataContainer="scheduledReportsDc">
             <actions>
                 <action id="create" type="create"/>
                 <action id="edit" type="edit"/>
@@ -42,10 +42,10 @@
             <rowsCount/>
             <buttonsPanel id="buttonsPanel"
                           alwaysVisible="true">
-                <button id="createBtn" action="scheduledReportConfigurationsTable.create"/>
-                <button id="editBtn" action="scheduledReportConfigurationsTable.edit"/>
-                <button id="removeBtn" action="scheduledReportConfigurationsTable.remove"/>
-                <button id="executionsBtn" action="scheduledReportConfigurationsTable.executions" />
+                <button id="createBtn" action="scheduledReportsTable.create"/>
+                <button id="editBtn" action="scheduledReportsTable.edit"/>
+                <button id="removeBtn" action="scheduledReportsTable.remove"/>
+                <button id="executionsBtn" action="scheduledReportsTable.executions" />
             </buttonsPanel>
         </groupTable>
         <hbox id="lookupActions" spacing="true" visible="false">

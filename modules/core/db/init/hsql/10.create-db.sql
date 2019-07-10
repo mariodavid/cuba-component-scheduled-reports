@@ -1,5 +1,5 @@
--- begin DDCSR_SCHEDULED_REPORT_CONFIG
-create table DDCSR_SCHEDULED_REPORT_CONFIG (
+-- begin DDCSR_SCHEDULED_REPORT
+create table DDCSR_SCHEDULED_REPORT (
     ID varchar(36) not null,
     VERSION integer not null,
     CREATE_TS timestamp,
@@ -9,15 +9,26 @@ create table DDCSR_SCHEDULED_REPORT_CONFIG (
     DELETE_TS timestamp,
     DELETED_BY varchar(50),
     --
+    FREQUENCY_FREQUENCY varchar(50) not null,
+    FREQUENCY_CUSTOM_CRON varchar(255),
+    FREQUENCY_DAILY_HOUR integer,
+    FREQUENCY_DAILY_MINUTE integer,
+    FREQUENCY_HOURLY_MINUTE integer,
+    FREQUENCY_MONTHLY_DAY integer,
+    FREQUENCY_MONTHLY_HOUR integer,
+    MONTHLY_MINUTE integer,
+    --
     REPORT_ID varchar(36) not null,
+    REPORT_TEMPLATE_ID varchar(36),
+    SCHEDULED_TASK_ID varchar(36) not null,
     NAME varchar(255) not null,
     CODE varchar(255),
-    FREQUENCY varchar(50) not null,
     ACTIVE boolean,
+    PARAMETER_PROVIDER_BEAN varchar(255),
     --
     primary key (ID)
 )^
--- end DDCSR_SCHEDULED_REPORT_CONFIG
+-- end DDCSR_SCHEDULED_REPORT
 -- begin DDCSR_SCHEDULED_REPORT_EXEC
 create table DDCSR_SCHEDULED_REPORT_EXEC (
     ID varchar(36) not null,
@@ -29,7 +40,7 @@ create table DDCSR_SCHEDULED_REPORT_EXEC (
     DELETE_TS timestamp,
     DELETED_BY varchar(50),
     --
-    CONFIG_ID varchar(36) not null,
+    SCHEDULED_REPORT_ID varchar(36) not null,
     SUCCESSFUL_ boolean,
     EXECUTED_AT date not null,
     REPORT_FILE_ID varchar(36),

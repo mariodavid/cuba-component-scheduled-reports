@@ -34,7 +34,7 @@
                 <column id="scheduledReport"/>
                 <column id="successful"/>
                 <column id="executedAt"/>
-                <column id="reportFile"/>
+                <column id="reportFile" link="true" linkInvoke="downloadFile"/>
             </columns>
             <rowsCount/>
             <buttonsPanel id="buttonsPanel"

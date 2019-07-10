@@ -27,9 +27,8 @@
                     width="100%"
                     dataContainer="scheduledReportExecutionsDc">
             <actions>
-                <action id="create" type="create"/>
                 <action id="edit" type="edit"/>
-                <action id="remove" type="remove"/>
+                <action id="refresh" type="refresh"/>
             </actions>
             <columns>
                 <column id="scheduledReport"/>
@@ -40,9 +39,8 @@
             <rowsCount/>
             <buttonsPanel id="buttonsPanel"
                           alwaysVisible="true">
-                <button id="createBtn" action="scheduledReportExecutionsTable.create"/>
                 <button id="editBtn" action="scheduledReportExecutionsTable.edit"/>
-                <button id="removeBtn" action="scheduledReportExecutionsTable.remove"/>
+                <button id="refreshBtn" action="scheduledReportExecutionsTable.refresh"/>
             </buttonsPanel>
         </groupTable>
         <hbox id="lookupActions" spacing="true" visible="false">

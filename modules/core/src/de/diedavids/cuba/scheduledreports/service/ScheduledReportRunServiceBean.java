@@ -5,7 +5,6 @@ import com.haulmont.cuba.core.global.DataManager;
 import com.haulmont.cuba.core.global.Events;
 import com.haulmont.cuba.core.global.TimeSource;
 import com.haulmont.reports.ReportingApi;
-import com.haulmont.reports.app.service.ReportService;
 import com.haulmont.reports.entity.Report;
 import com.haulmont.reports.entity.ReportTemplate;
 import de.diedavids.cuba.scheduledreports.ScheduledReportExtension;
@@ -54,45 +53,61 @@ public class ScheduledReportRunServiceBean implements ScheduledReportRunService 
 
     private void runReport(ScheduledReport scheduledReport) {
 
-        Report report = scheduledReport.getReport();
-
-        ScheduledReportExecution scheduledReportExecution = dataManager.create(ScheduledReportExecution.class);
-        scheduledReportExecution.setScheduledReport(scheduledReport);
+        ScheduledReportExecution scheduledReportExecution = createExecution(scheduledReport);
 
         boolean shouldBeExecuted = getExtension(scheduledReport).shouldBeExecuted(scheduledReport);
 
         if (shouldBeExecuted) {
-
-            FileDescriptor savedReport = null;
-            try {
-                ReportTemplate reportTemplate = getReportTemplate(scheduledReport, report);
-                savedReport = reportingApi.createAndSaveReport(
-                        report,
-                        reportTemplate,
-                        getParams(scheduledReport),
-                        getFilename(scheduledReport, reportTemplate)
-                );
-                scheduledReportExecution.setReportFile(savedReport);
-                scheduledReportExecution.setSuccessful(true);
-            } catch (Exception e) {
-                scheduledReportExecution.setSuccessful(false);
-            }
-
-            scheduledReportExecution.setExecutedAt(timeSource.currentTimestamp());
-
-            dataManager.commit(scheduledReportExecution);
-
-            events.publish(new ScheduledReportRun(this, savedReport, scheduledReportExecution));
-
+            doRunReport(scheduledReport, scheduledReportExecution);
         }
         else {
             log.info("execution skipped for scheduled report: {}", scheduledReport);
         }
     }
 
+    private void doRunReport(ScheduledReport scheduledReport, ScheduledReportExecution scheduledReportExecution) {
+        try {
+            Report report = scheduledReport.getReport();
+            ReportTemplate reportTemplate = getReportTemplate(scheduledReport, report);
+            scheduledReportExecution.setReportFile(generateReportFile(scheduledReport, report, reportTemplate));
+            scheduledReportExecution.setSuccessful(true);
+        } catch (Exception e) {
+            log.error("error while creating report file for scheduled report: '" + scheduledReport.getName() + "'", e);
+            scheduledReportExecution.setSuccessful(false);
+        }
+
+        scheduledReportExecution.setExecutedAt(timeSource.currentTimestamp());
+
+        dataManager.commit(scheduledReportExecution);
+
+        notifySystemAboutOutcome(scheduledReportExecution);
+    }
+
+    private void notifySystemAboutOutcome(ScheduledReportExecution scheduledReportExecution) {
+        events.publish(new ScheduledReportRun(this, scheduledReportExecution.getReportFile(), scheduledReportExecution));
+    }
+
+    private FileDescriptor generateReportFile(ScheduledReport scheduledReport, Report report, ReportTemplate reportTemplate) {
+        FileDescriptor savedReport;
+        savedReport = reportingApi.createAndSaveReport(
+                report,
+                reportTemplate,
+                getReportParameters(scheduledReport),
+                getFilename(scheduledReport, reportTemplate)
+        );
+        return savedReport;
+    }
+
+    private ScheduledReportExecution createExecution(ScheduledReport scheduledReport) {
+        ScheduledReportExecution scheduledReportExecution = dataManager.create(ScheduledReportExecution.class);
+        scheduledReportExecution.setScheduledReport(scheduledReport);
+        return scheduledReportExecution;
+    }
+
     private ReportTemplate getReportTemplate(ScheduledReport scheduledReport, Report report) {
 
-        Optional<ReportTemplate> reportTemplateFromExtension = getExtension(scheduledReport).provideReportTemplate(scheduledReport, report);
+        Optional<ReportTemplate> reportTemplateFromExtension = getExtension(scheduledReport)
+                .provideReportTemplate(scheduledReport, report);
 
         return reportTemplateFromExtension
                 .orElseGet(() -> getDefaultReportTemplate(scheduledReport, report));
@@ -115,13 +130,18 @@ public class ScheduledReportRunServiceBean implements ScheduledReportRunService 
         Optional<String> optionalFilename = extension.provideFilename(scheduledReport, reportTemplate);
 
 
-        return optionalFilename.orElseGet(() -> defaultExtension().provideFilename(scheduledReport, reportTemplate).orElse(null));
+        return optionalFilename
+                .orElseGet(() -> defaultExtension().provideFilename(scheduledReport, reportTemplate)
+                .orElse(null));
     }
 
-    private Map<String, Object> getParams(ScheduledReport scheduledReport) {
+    private Map<String, Object> getReportParameters(ScheduledReport scheduledReport) {
         ScheduledReportExtension extension = getExtension(scheduledReport);
 
-        return extension.provideParameters(scheduledReport);
+        Map<String, Object> possibleReportParameters = extension.provideParameters(scheduledReport);
+
+        return Optional.ofNullable(possibleReportParameters)
+                .orElseGet(() -> defaultExtension().provideParameters(scheduledReport));
     }
 
     private ScheduledReportExtension getExtension(ScheduledReport scheduledReport) {

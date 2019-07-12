@@ -64,9 +64,6 @@ public class ScheduledReport extends StandardEntity {
     @OneToMany(mappedBy = "scheduledReport")
     protected List<ScheduledReportExecution> executions;
 
-    @Column(name = "PARAMETER_PROVIDER_BEAN")
-    protected String parameterProviderBean;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "EMAIL_TEMPLATE_ID")
     protected EmailTemplate emailTemplate;
@@ -77,14 +74,6 @@ public class ScheduledReport extends StandardEntity {
 
     public EmailTemplate getEmailTemplate() {
         return emailTemplate;
-    }
-
-    public String getParameterProviderBean() {
-        return parameterProviderBean;
-    }
-
-    public void setParameterProviderBean(String parameterProviderBean) {
-        this.parameterProviderBean = parameterProviderBean;
     }
 
     public ScheduledFrequency getFrequency() {

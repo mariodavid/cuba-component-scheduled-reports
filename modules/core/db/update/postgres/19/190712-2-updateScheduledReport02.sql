@@ -1,0 +1,1 @@
+alter table DDCSR_SCHEDULED_REPORT rename column parameter_provider_bean to parameter_provider_bean__u33385 ;

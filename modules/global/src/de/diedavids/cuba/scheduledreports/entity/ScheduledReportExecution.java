@@ -1,11 +1,13 @@
 package de.diedavids.cuba.scheduledreports.entity;
 
 import com.haulmont.cuba.core.entity.FileDescriptor;
+import com.haulmont.cuba.core.entity.SendingMessage;
 import com.haulmont.cuba.core.entity.StandardEntity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @Table(name = "DDCSR_SCHEDULED_REPORT_EXEC")
 @Entity(name = "ddcsr_ScheduledReportExecution")
@@ -28,6 +30,20 @@ public class ScheduledReportExecution extends StandardEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "REPORT_FILE_ID")
     protected FileDescriptor reportFile;
+
+    @JoinTable(name = "DDCSR_SR_EXEC_MESSAGE_LINK", joinColumns = @JoinColumn(name = "SCHEDULED_REPORT_EXECUTION_ID"), inverseJoinColumns = @JoinColumn(name = "SENDING_MESSAGE_ID"))
+    @ManyToMany
+    protected List<SendingMessage> sendingMessages;
+
+
+    public List<SendingMessage> getSendingMessages() {
+        return sendingMessages;
+    }
+
+    public void setSendingMessages(List<SendingMessage> sendingMessages) {
+        this.sendingMessages = sendingMessages;
+    }
+
 
     public ScheduledReport getScheduledReport() {
         return scheduledReport;

@@ -35,6 +35,7 @@
                         <textField id="codeField" property="code"/>
                         <checkBox id="activeField" property="active"/>
                         <textField id="parameterProviderBeanField" property="parameterProviderBean"/>
+                        <pickerField id="emailTemplateField" property="emailTemplate"/>
                     </column>
                 </form>
             </groupBox>

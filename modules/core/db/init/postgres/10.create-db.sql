@@ -25,6 +25,7 @@ create table DDCSR_SCHEDULED_REPORT (
     CODE varchar(255),
     ACTIVE boolean,
     PARAMETER_PROVIDER_BEAN varchar(255),
+    EMAIL_TEMPLATE_ID uuid,
     --
     primary key (ID)
 )^
@@ -48,3 +49,10 @@ create table DDCSR_SCHEDULED_REPORT_EXEC (
     primary key (ID)
 )^
 -- end DDCSR_SCHEDULED_REPORT_EXEC
+-- begin DDCSR_SR_EXEC_MESSAGE_LINK
+create table DDCSR_SR_EXEC_MESSAGE_LINK (
+    SCHEDULED_REPORT_EXECUTION_ID uuid,
+    SENDING_MESSAGE_ID uuid,
+    primary key (SCHEDULED_REPORT_EXECUTION_ID, SENDING_MESSAGE_ID)
+)^
+-- end DDCSR_SR_EXEC_MESSAGE_LINK

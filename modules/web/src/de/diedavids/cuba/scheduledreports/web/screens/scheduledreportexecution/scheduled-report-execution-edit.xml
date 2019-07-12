@@ -8,12 +8,13 @@
                   class="de.diedavids.cuba.scheduledreports.entity.ScheduledReportExecution"
                   view="scheduledReportExecution-view">
             <loader/>
+            <collection id="sendingMessagesDc" property="sendingMessages"/>
         </instance>
     </data>
     <dialogMode height="600"
                 width="800"/>
     <layout expand="editActions" spacing="true">
-        <form id="form" dataContainer="scheduledReportExecutionDc">
+        <form id="form" dataContainer="scheduledReportExecutionDc" editable="false">
             <column width="250px">
                 <pickerField id="scheduledReportField" property="scheduledReport">
                     <actions>
@@ -26,6 +27,17 @@
                 <upload id="reportFileField" fileStoragePutMode="IMMEDIATE" property="reportFile" showFileName="true"/>
             </column>
         </form>
+        <groupBox id="sendingMessagesBox"
+                  caption="msg://de.diedavids.cuba.scheduledreports.entity/ScheduledReportExecution.sendingMessages">
+            <table id="sendingMessagesTable" dataContainer="sendingMessagesDc" width="100%" height="200px">
+                <columns>
+                    <column id="address"/>
+                    <column id="caption"/>
+                    <column id="status"/>
+                    <column id="dateSent"/>
+                </columns>
+            </table>
+        </groupBox>
         <hbox id="editActions" spacing="true">
             <button action="windowCommitAndClose"/>
             <button action="windowClose"/>

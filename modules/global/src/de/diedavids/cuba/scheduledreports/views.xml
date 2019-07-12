@@ -6,6 +6,7 @@
         <property name="scheduledTask" view="_local"/>
         <property name="frequency" view="_local"/>
         <property name="reportTemplate" view="_local"/>
+        <property name="emailTemplate" view="_minimal"/>
     </view>
     <view entity="ddcsr_ScheduledReport" name="scheduled-report-with-executions" extends="_local">
         <property name="report" view="report.withTemplates">
@@ -15,9 +16,11 @@
         <property name="frequency" view="_local"/>
         <property name="reportTemplate" view="_local"/>
         <property name="executions" view="_base"/>
+        <property name="emailTemplate" view="_minimal"/>
     </view>
     <view entity="ddcsr_ScheduledReportExecution" name="scheduledReportExecution-view" extends="_local">
         <property name="scheduledReport" view="_minimal"/>
         <property name="reportFile" view="_minimal"/>
+        <property name="sendingMessages" view="_local" />s
     </view>
 </views>

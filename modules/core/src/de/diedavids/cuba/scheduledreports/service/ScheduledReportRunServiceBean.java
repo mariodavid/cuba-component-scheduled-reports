@@ -1,8 +1,14 @@
 package de.diedavids.cuba.scheduledreports.service;
 
 import com.haulmont.addon.emailtemplates.core.EmailTemplatesAPI;
+import com.haulmont.addon.emailtemplates.entity.EmailTemplate;
+import com.haulmont.addon.emailtemplates.exceptions.ReportParameterTypeChangedException;
+import com.haulmont.addon.emailtemplates.exceptions.TemplateNotFoundException;
+import com.haulmont.cuba.core.app.EmailerAPI;
 import com.haulmont.cuba.core.entity.FileDescriptor;
+import com.haulmont.cuba.core.entity.SendingMessage;
 import com.haulmont.cuba.core.global.DataManager;
+import com.haulmont.cuba.core.global.EmailInfo;
 import com.haulmont.cuba.core.global.Events;
 import com.haulmont.cuba.core.global.TimeSource;
 import com.haulmont.reports.ReportingApi;
@@ -20,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -44,6 +51,8 @@ public class ScheduledReportRunServiceBean implements ScheduledReportRunService 
     protected ReportingApi reportingApi;
     @Inject
     protected EmailTemplatesAPI emailTemplatesAPI;
+    @Inject
+    protected EmailerAPI emailerAPI;
 
 
     @Override
@@ -81,11 +90,34 @@ public class ScheduledReportRunServiceBean implements ScheduledReportRunService 
 
         scheduledReportExecution.setExecutedAt(timeSource.currentTimestamp());
 
-        dataManager.commit(scheduledReportExecution);
+        ScheduledReportExecution persistedReportExecution = dataManager.commit(scheduledReportExecution);
 
         notifySystemAboutOutcome(scheduledReportExecution);
 
-        //emailTemplatesAPI.
+
+        if (scheduledReport.getEmailTemplate() != null) {
+
+
+            EmailTemplate emailTemplate = dataManager.reload(scheduledReport.getEmailTemplate(), "emailTemplate-view");
+            try {
+
+                EmailInfo emailInfo = emailTemplatesAPI.buildFromTemplate(emailTemplate)
+                        .addAttachmentFile(scheduledReportExecution.getReportFile())
+                        .generateEmail();
+
+                List<SendingMessage> sendingMessages = emailerAPI.sendEmailAsync(emailInfo);
+
+                persistedReportExecution.setSendingMessages(sendingMessages);
+
+                dataManager.commit(persistedReportExecution);
+
+
+            } catch (TemplateNotFoundException e) {
+                e.printStackTrace();
+            } catch (ReportParameterTypeChangedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void notifySystemAboutOutcome(ScheduledReportExecution scheduledReportExecution) {

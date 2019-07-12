@@ -1,5 +1,6 @@
 package de.diedavids.cuba.scheduledreports.entity;
 
+import com.haulmont.addon.emailtemplates.entity.EmailTemplate;
 import com.haulmont.chile.core.annotations.Composition;
 import com.haulmont.chile.core.annotations.NamePattern;
 import com.haulmont.cuba.core.entity.ScheduledTask;
@@ -65,6 +66,18 @@ public class ScheduledReport extends StandardEntity {
 
     @Column(name = "PARAMETER_PROVIDER_BEAN")
     protected String parameterProviderBean;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "EMAIL_TEMPLATE_ID")
+    protected EmailTemplate emailTemplate;
+
+    public void setEmailTemplate(EmailTemplate emailTemplate) {
+        this.emailTemplate = emailTemplate;
+    }
+
+    public EmailTemplate getEmailTemplate() {
+        return emailTemplate;
+    }
 
     public String getParameterProviderBean() {
         return parameterProviderBean;

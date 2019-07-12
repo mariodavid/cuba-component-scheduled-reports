@@ -1,5 +1,6 @@
 package de.diedavids.cuba.scheduledreports.service;
 
+import com.haulmont.addon.emailtemplates.core.EmailTemplatesAPI;
 import com.haulmont.cuba.core.entity.FileDescriptor;
 import com.haulmont.cuba.core.global.DataManager;
 import com.haulmont.cuba.core.global.Events;
@@ -41,6 +42,8 @@ public class ScheduledReportRunServiceBean implements ScheduledReportRunService 
     protected ScheduledReportExtensionFactory scheduledReportExtensionFactory;
     @Inject
     protected ReportingApi reportingApi;
+    @Inject
+    protected EmailTemplatesAPI emailTemplatesAPI;
 
 
     @Override
@@ -81,6 +84,8 @@ public class ScheduledReportRunServiceBean implements ScheduledReportRunService 
         dataManager.commit(scheduledReportExecution);
 
         notifySystemAboutOutcome(scheduledReportExecution);
+
+        //emailTemplatesAPI.
     }
 
     private void notifySystemAboutOutcome(ScheduledReportExecution scheduledReportExecution) {

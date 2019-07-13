@@ -36,7 +36,6 @@ public class ScheduledReportRunServiceBean implements ScheduledReportRunService 
 
     private static final Logger log = LoggerFactory.getLogger(ScheduledReportRunServiceBean.class);
 
-
     @Inject
     protected ScheduledReportRepository scheduledReportRepository;
     @Inject
@@ -87,37 +86,46 @@ public class ScheduledReportRunServiceBean implements ScheduledReportRunService 
             log.error("error while creating report file for scheduled report: '" + scheduledReport.getName() + "'", e);
             scheduledReportExecution.setSuccessful(false);
         }
+        ScheduledReportExecution persistedReportExecution = persistExecution(scheduledReportExecution);
 
-        scheduledReportExecution.setExecutedAt(timeSource.currentTimestamp());
-
-        ScheduledReportExecution persistedReportExecution = dataManager.commit(scheduledReportExecution);
+        triggerEmailSendingIfNecessary(scheduledReport, persistedReportExecution);
 
         notifySystemAboutOutcome(scheduledReportExecution);
 
+    }
 
+    private ScheduledReportExecution persistExecution(ScheduledReportExecution scheduledReportExecution) {
+        scheduledReportExecution.setExecutedAt(timeSource.currentTimestamp());
+        return dataManager.commit(scheduledReportExecution);
+    }
+
+    private void triggerEmailSendingIfNecessary(ScheduledReport scheduledReport, ScheduledReportExecution scheduledReportExecution) {
         if (scheduledReport.getEmailTemplate() != null) {
 
-
+            log.info("Email for scheduled report is send");
             EmailTemplate emailTemplate = dataManager.reload(scheduledReport.getEmailTemplate(), "emailTemplate-view");
             try {
 
-                EmailInfo emailInfo = emailTemplatesAPI.buildFromTemplate(emailTemplate)
-                        .addAttachmentFile(scheduledReportExecution.getReportFile())
-                        .generateEmail();
+                List<SendingMessage> sendingMessages = triggerEmailSending(scheduledReportExecution, emailTemplate);
+                scheduledReportExecution.setSendingMessages(sendingMessages);
 
-                List<SendingMessage> sendingMessages = emailerAPI.sendEmailAsync(emailInfo);
-
-                persistedReportExecution.setSendingMessages(sendingMessages);
-
-                dataManager.commit(persistedReportExecution);
+                dataManager.commit(scheduledReportExecution);
 
 
             } catch (TemplateNotFoundException e) {
-                e.printStackTrace();
+                log.error("Email Template not found for scheduled report", e);
             } catch (ReportParameterTypeChangedException e) {
-                e.printStackTrace();
+                log.error("Email Template could not be rendered because of wrong parameter types", e);
             }
         }
+    }
+
+    private List<SendingMessage> triggerEmailSending(ScheduledReportExecution scheduledReportExecution, EmailTemplate emailTemplate) throws ReportParameterTypeChangedException, TemplateNotFoundException {
+        EmailInfo emailInfo = emailTemplatesAPI.buildFromTemplate(emailTemplate)
+                .addAttachmentFile(scheduledReportExecution.getReportFile())
+                .generateEmail();
+
+        return emailerAPI.sendEmailAsync(emailInfo);
     }
 
     private void notifySystemAboutOutcome(ScheduledReportExecution scheduledReportExecution) {

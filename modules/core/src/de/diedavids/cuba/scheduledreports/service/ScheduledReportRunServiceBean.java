@@ -1,14 +1,7 @@
 package de.diedavids.cuba.scheduledreports.service;
 
-import com.haulmont.addon.emailtemplates.core.EmailTemplatesAPI;
-import com.haulmont.addon.emailtemplates.entity.EmailTemplate;
-import com.haulmont.addon.emailtemplates.exceptions.ReportParameterTypeChangedException;
-import com.haulmont.addon.emailtemplates.exceptions.TemplateNotFoundException;
-import com.haulmont.cuba.core.app.EmailerAPI;
 import com.haulmont.cuba.core.entity.FileDescriptor;
-import com.haulmont.cuba.core.entity.SendingMessage;
 import com.haulmont.cuba.core.global.DataManager;
-import com.haulmont.cuba.core.global.EmailInfo;
 import com.haulmont.cuba.core.global.Events;
 import com.haulmont.cuba.core.global.TimeSource;
 import com.haulmont.reports.ReportingApi;
@@ -17,6 +10,7 @@ import com.haulmont.reports.entity.ReportTemplate;
 import de.diedavids.cuba.scheduledreports.ScheduledReportExtension;
 import de.diedavids.cuba.scheduledreports.ScheduledReportExtensionFactory;
 import de.diedavids.cuba.scheduledreports.core.DefaultScheduledReportParameterExtension;
+import de.diedavids.cuba.scheduledreports.core.ScheduledReportEmailing;
 import de.diedavids.cuba.scheduledreports.core.ScheduledReportRepository;
 import de.diedavids.cuba.scheduledreports.entity.ScheduledReport;
 import de.diedavids.cuba.scheduledreports.entity.ScheduledReportExecution;
@@ -26,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -48,11 +41,9 @@ public class ScheduledReportRunServiceBean implements ScheduledReportRunService 
     protected ScheduledReportExtensionFactory scheduledReportExtensionFactory;
     @Inject
     protected ReportingApi reportingApi;
-    @Inject
-    protected EmailTemplatesAPI emailTemplatesAPI;
-    @Inject
-    protected EmailerAPI emailerAPI;
 
+    @Inject
+    protected ScheduledReportEmailing scheduledReportEmailing;
 
     @Override
     public void runScheduledReport(String code) {
@@ -101,35 +92,13 @@ public class ScheduledReportRunServiceBean implements ScheduledReportRunService 
 
     private void triggerEmailSendingIfNecessary(ScheduledReport scheduledReport, ScheduledReportExecution scheduledReportExecution) {
         if (scheduledReport.getEmailTemplate() != null) {
-
-            log.info("Email for scheduled report is send");
-            EmailTemplate emailTemplate = dataManager.reload(scheduledReport.getEmailTemplate(), "emailTemplate-view");
-            try {
-
-                List<SendingMessage> sendingMessages = triggerEmailSending(scheduledReportExecution, emailTemplate);
-                scheduledReportExecution.setSendingMessages(sendingMessages);
-
-                dataManager.commit(scheduledReportExecution);
-
-
-            } catch (TemplateNotFoundException e) {
-                log.error("Email Template not found for scheduled report", e);
-            } catch (ReportParameterTypeChangedException e) {
-                log.error("Email Template could not be rendered because of wrong parameter types", e);
-            }
+            scheduledReportEmailing.sendEmailForScheduledReport(
+                    scheduledReport.getEmailTemplate(),
+                    scheduledReportExecution
+            );
         }
     }
 
-    private List<SendingMessage> triggerEmailSending(ScheduledReportExecution scheduledReportExecution, EmailTemplate emailTemplate) throws ReportParameterTypeChangedException, TemplateNotFoundException {
-        EmailInfo emailInfo = emailTemplatesAPI.buildFromTemplate(emailTemplate)
-                .addAttachmentFile(
-                        scheduledReportExecution
-                                .getReportFile()
-                )
-                .generateEmail();
-
-        return emailerAPI.sendEmailAsync(emailInfo);
-    }
 
     private void notifySystemAboutOutcome(ScheduledReportExecution scheduledReportExecution) {
         events.publish(new ScheduledReportRun(this, scheduledReportExecution.getReportFile(), scheduledReportExecution));
@@ -171,7 +140,6 @@ public class ScheduledReportRunServiceBean implements ScheduledReportRunService 
     private DefaultScheduledReportParameterExtension defaultExtension() {
         return new DefaultScheduledReportParameterExtension();
     }
-
 
     private String getFilename(ScheduledReport scheduledReport, ReportTemplate reportTemplate) {
         ScheduledReportExtension extension = getExtension(scheduledReport);

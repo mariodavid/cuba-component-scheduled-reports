@@ -1,5 +1,6 @@
 package de.diedavids.cuba.scheduledreports.service
 
+import com.haulmont.addon.emailtemplates.entity.JsonEmailTemplate
 import com.haulmont.cuba.core.entity.FileDescriptor
 import com.haulmont.cuba.core.global.DataManager
 import com.haulmont.cuba.core.global.Events
@@ -9,6 +10,7 @@ import com.haulmont.reports.entity.Report
 import com.haulmont.reports.entity.ReportTemplate
 import de.diedavids.cuba.scheduledreports.ScheduledReportExtensionFactory
 import de.diedavids.cuba.scheduledreports.core.DefaultScheduledReportParameterExtension
+import de.diedavids.cuba.scheduledreports.core.ScheduledReportEmailing
 import de.diedavids.cuba.scheduledreports.core.ScheduledReportRepository
 import de.diedavids.cuba.scheduledreports.entity.ScheduledReport
 import de.diedavids.cuba.scheduledreports.entity.ScheduledReportExecution
@@ -22,6 +24,8 @@ class ScheduledReportRunServiceBeanSpec extends Specification {
     private ScheduledReportRunServiceBean sut
     private DataManager dataManager
     private Events events
+    private ScheduledReportEmailing scheduledReportEmailing
+    private ScheduledReportExecution scheduledReportExecution
 
 
     def setup() {
@@ -31,16 +35,20 @@ class ScheduledReportRunServiceBeanSpec extends Specification {
 
         dataManager = Mock(DataManager)
 
-        dataManager.create(ScheduledReportExecution) >> new ScheduledReportExecution()
+        scheduledReportExecution = new ScheduledReportExecution()
+        dataManager.create(ScheduledReportExecution) >> scheduledReportExecution
+        dataManager.commit(scheduledReportExecution) >> scheduledReportExecution
 
         events = Mock(Events)
+        scheduledReportEmailing = Mock(ScheduledReportEmailing)
         sut = new ScheduledReportRunServiceBean(
                 reportingApi: reportingApi,
                 scheduledReportRepository: scheduledReportRepository,
                 dataManager: dataManager,
                 scheduledReportExtensionFactory: scheduledReportExtensionFactory,
                 timeSource: Mock(TimeSource),
-                events: events
+                events: events,
+                scheduledReportEmailing: scheduledReportEmailing
         )
     }
 
@@ -162,5 +170,34 @@ class ScheduledReportRunServiceBeanSpec extends Specification {
             event.reportFile == null &&
             event.reportExecution.successful == false
         })
+    }
+    def "runScheduledReport triggers email sending for a scheduled report with activated email"() {
+
+        given:
+
+        def report = new Report(
+                defaultTemplate: new ReportTemplate(),
+        )
+
+        def emailTemplate = new JsonEmailTemplate()
+        def scheduledReport = new ScheduledReport(
+                report: report,
+                emailTemplate: emailTemplate
+        )
+
+        and:
+        scheduledReportRepository.loadByCode('my_report', _) >> scheduledReport
+
+        and:
+        scheduledReportExtensionFactory.create(scheduledReport) >> new DefaultScheduledReportParameterExtension()
+
+        and:
+        reportingApi.createAndSaveReport(report, _,_,_) >> Mock(FileDescriptor)
+
+        when:
+        sut.runScheduledReport('my_report')
+
+        then:
+        1 * scheduledReportEmailing.sendEmailForScheduledReport(emailTemplate, scheduledReportExecution)
     }
 }

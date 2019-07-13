@@ -122,7 +122,10 @@ public class ScheduledReportRunServiceBean implements ScheduledReportRunService 
 
     private List<SendingMessage> triggerEmailSending(ScheduledReportExecution scheduledReportExecution, EmailTemplate emailTemplate) throws ReportParameterTypeChangedException, TemplateNotFoundException {
         EmailInfo emailInfo = emailTemplatesAPI.buildFromTemplate(emailTemplate)
-                .addAttachmentFile(scheduledReportExecution.getReportFile())
+                .addAttachmentFile(
+                        scheduledReportExecution
+                                .getReportFile()
+                )
                 .generateEmail();
 
         return emailerAPI.sendEmailAsync(emailInfo);

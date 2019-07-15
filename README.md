@@ -21,7 +21,7 @@ and additionally optionally can be send out via Email.
 | 7.0.x            | 0.1.x          |
 
 
-The latest version is: [ ![Download](https://api.bintray.com/packages/mariodavid/cuba-components/cuba-component-instant-launcher/images/download.svg) ](https://bintray.com/mariodavid/cuba-components/cuba-component-instant-launcher/_latestVersion)
+The latest version is: [ ![Download](https://api.bintray.com/packages/mariodavid/cuba-components/cuba-component-scheduled-reports/images/download.svg) ](https://bintray.com/mariodavid/cuba-components/cuba-component-instant-launcher/_latestVersion)
 
 Add custom application component to your project:
 
@@ -84,5 +84,3 @@ information about the execution timestamp, the report file and optionally a list
 
 ### Example usage
 To see this application component in action, check out this example: [cuba-example-using-scheduled-reports](https://github.com/mariodavid/cuba-example-using-scheduled-reports).
-
-### Screenshots

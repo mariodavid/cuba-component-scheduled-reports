@@ -64,7 +64,7 @@ to the email.
 ### Programmatic Scheduled Report Extensions
 
 Currently (v. 0.1.0) the ability to define certain parameters of the Report or the Email template are limited to the abilities
-of the corresponding application components ([Reports](https://github.com/cuba-platform/reports) and Email Templates](https://github.com/cuba-platform/email-templates)).
+of the corresponding application components ([Reports](https://github.com/cuba-platform/reports) and Email Templates](https://github.com/cuba-platform/emailtemplate-addon)).
 
 Since there is the need to dynamically define certain information, it is possible to extend the functionality of a scheduled report
 programmatically that is executed at the point when the scheduled report is run.

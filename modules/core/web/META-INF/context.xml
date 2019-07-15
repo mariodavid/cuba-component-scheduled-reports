@@ -7,21 +7,21 @@
       maxTotal="20"
       maxIdle="2"
       maxWaitMillis="5000"
-      driverClassName="org.postgresql.Driver"
-      url="jdbc:postgresql://localhost/ddcsr2"
-      username="postgres"
-      password="postgres"/>
+      driverClassName="org.hsqldb.jdbc.JDBCDriver"
+      url="jdbc:hsqldb:hsql://localhost:9010/ddcsr"
+      username="sa"
+      password=""/>
 
     <!-- Switch off session serialization -->
     <Manager pathname=""/>
-    <!--<Resource driverClassName="org.hsqldb.jdbc.JDBCDriver"
+    <!--<Resource driverClassName="org.postgresql.Driver"
           maxIdle="2"
           maxTotal="20"
           maxWaitMillis="5000"
           name="jdbc/CubaDS"
-          password=""
+          password="postgres"
           type="javax.sql.DataSource"
-          url="jdbc:hsqldb:hsql://localhost:9010/ddcsr"
-          username="sa"/>-->
+          url="jdbc:postgresql://localhost/ddcsr2"
+          username="postgres"/>-->
 
 </Context>

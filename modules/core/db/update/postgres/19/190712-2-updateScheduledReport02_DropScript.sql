@@ -1,1 +1,0 @@
-alter table DDCSR_SCHEDULED_REPORT drop column PARAMETER_PROVIDER_BEAN__U33385 cascade ;

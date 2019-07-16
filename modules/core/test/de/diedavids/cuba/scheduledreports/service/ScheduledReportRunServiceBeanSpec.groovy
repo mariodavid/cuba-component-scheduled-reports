@@ -182,7 +182,8 @@ class ScheduledReportRunServiceBeanSpec extends Specification {
         def emailTemplate = new JsonEmailTemplate()
         def scheduledReport = new ScheduledReport(
                 report: report,
-                emailTemplate: emailTemplate
+                emailTemplate: emailTemplate,
+                sendEmail: true
         )
 
         and:

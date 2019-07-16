@@ -161,22 +161,7 @@ configure([globalModule, coreModule, webModule]) {
 configure([globalModule, coreModule, webModule]) {
     apply(plugin: 'groovy')
     apply plugin: 'net.saliman.cobertura'
-    apply plugin: 'codenarc'
-
-    codenarc {
-        toolVersion = "1.3"
-        ignoreFailures = false
-        reportFormat = 'html'
-        reportsDir = project.file("build/reports/codenarc")
-    }
-
-    codenarcMain {
-        configFile = rootProject.file("config/codenarc/rulesMain.groovy")
-    }
-    codenarcTest {
-        configFile = rootProject.file("config/codenarc/rulesTests.groovy")
-    }
-
+    
 
     cobertura {
         coverageFormats = ['html', 'xml']

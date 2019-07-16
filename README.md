@@ -54,12 +54,20 @@ The `scheduled-reports` application component enriches the Reports main menu wit
 A `Scheduled Report` consists mainly of a reference to the report instance, that should be executed as well as a schedule
 that defines on how often the report should be executed.
 
+![sales report scheduled report](https://github.com/mariodavid/cuba-example-using-scheduled-reports/blob/master/img/sales-report-scheduled-report.png)
+
+
+### Example usage
+To see this application component in action, check out this example: [cuba-example-using-scheduled-reports](https://github.com/mariodavid/cuba-example-using-scheduled-reports).
+
+
 ### Emailing Report
 
 Besides the file generation itself, it is also possible to send out the report via email. In order to do this, a Email template
 can be defined, that includes information on the receivers, the Email subject and body etc. The report file is attached
 to the email.
 
+![sales report scheduled email template](https://github.com/mariodavid/cuba-example-using-scheduled-reports/blob/master/img/sales-report-email-template.png)
 
 ### Programmatic Scheduled Report Extensions
 
@@ -77,10 +85,52 @@ This interface allows to programmatically define the following options during th
 * define the target filename
 * veto right to prevent execution
 
+
+### Application Event: `ScheduledReportRun`
+
+After the scheduled report was executed, the Spring application event `ScheduledReportRun` is published. It is possible
+to register to this application event in order to programmatically use the result of the scheduled report execution.
+
+An example can be found in the example project: [BigCustomersListSaver](https://github.com/mariodavid/cuba-example-using-scheduled-reports/blob/master/modules/core/src/de/diedavids/cuba/ceusr/core/BigCustomersListSaver.java#L27):
+
+```
+@Component(BigCustomersListSaver.NAME)
+public class BigCustomersListSaver implements ApplicationListener<ScheduledReportRun> {
+
+    public static final String NAME = "ceusr_BigCustomersListSaver";
+
+    @Inject
+    protected DataManager dataManager;
+
+    @Override
+    public void onApplicationEvent(ScheduledReportRun scheduledReportRun) {
+
+        ScheduledReportExecution reportExecution = scheduledReportRun.getReportExecution();
+        String scheduledReportCode = reportExecution.getScheduledReport().getCode();
+
+        if (scheduledReportCode.equals("big-customers")) {
+            BigCustomersList bigCustomersList = dataManager.create(BigCustomersList.class);
+            bigCustomersList.setFrom(toLocalDate(reportExecution.getExecutedAt()));
+            bigCustomersList.setBigCustomerListFile(scheduledReportRun.getReportFile());
+            bigCustomersList.setScheduledReportExecution(reportExecution);
+            dataManager.commit(bigCustomersList);
+        };
+    }
+
+    private LocalDate toLocalDate(Date dateToConvert) {
+        return dateToConvert.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+    }
+
+}
+```
+
 ### Scheduled Report Execution
 
 Every scheduled report execution is logged and can be seen via the menu `Reports > Scheduled Reports > Executions`. It contains
 information about the execution timestamp, the report file and optionally a list of outgoing emails and their sending status.
 
-### Example usage
-To see this application component in action, check out this example: [cuba-example-using-scheduled-reports](https://github.com/mariodavid/cuba-example-using-scheduled-reports).
+![big customer scheduled report execution](https://github.com/mariodavid/cuba-example-using-scheduled-reports/blob/master/img/big-customers-execution.png)
+
+![sales report scheduled execution details](https://github.com/mariodavid/cuba-example-using-scheduled-reports/blob/master/img/sales-report-execution.png)

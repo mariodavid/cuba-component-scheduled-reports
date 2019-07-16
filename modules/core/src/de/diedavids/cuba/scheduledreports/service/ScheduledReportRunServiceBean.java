@@ -91,7 +91,7 @@ public class ScheduledReportRunServiceBean implements ScheduledReportRunService 
     }
 
     private void triggerEmailSendingIfNecessary(ScheduledReport scheduledReport, ScheduledReportExecution scheduledReportExecution) {
-        if (scheduledReport.getEmailTemplate() != null) {
+        if (scheduledReport.getSendEmail() && scheduledReport.getEmailTemplate() != null) {
             scheduledReportEmailing.sendEmailForScheduledReport(
                     scheduledReport.getEmailTemplate(),
                     scheduledReportExecution

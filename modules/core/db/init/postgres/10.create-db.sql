@@ -24,6 +24,7 @@ create table DDCSR_SCHEDULED_REPORT (
     NAME varchar(255) not null,
     CODE varchar(255),
     ACTIVE boolean,
+    SEND_EMAIL boolean,
     EMAIL_TEMPLATE_ID uuid,
     --
     primary key (ID)

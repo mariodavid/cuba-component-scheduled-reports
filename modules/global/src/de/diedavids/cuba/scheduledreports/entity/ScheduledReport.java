@@ -21,7 +21,6 @@ import java.util.List;
 public class ScheduledReport extends StandardEntity {
     private static final long serialVersionUID = 867426585502431134L;
 
-
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "REPORT_ID")
@@ -64,9 +63,20 @@ public class ScheduledReport extends StandardEntity {
     @OneToMany(mappedBy = "scheduledReport")
     protected List<ScheduledReportExecution> executions;
 
+    @Column(name = "SEND_EMAIL")
+    protected Boolean sendEmail;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "EMAIL_TEMPLATE_ID")
     protected EmailTemplate emailTemplate;
+
+    public Boolean getSendEmail() {
+        return sendEmail;
+    }
+
+    public void setSendEmail(Boolean sendEmail) {
+        this.sendEmail = sendEmail;
+    }
 
     public void setEmailTemplate(EmailTemplate emailTemplate) {
         this.emailTemplate = emailTemplate;

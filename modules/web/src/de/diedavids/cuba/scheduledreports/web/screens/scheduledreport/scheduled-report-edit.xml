@@ -21,7 +21,7 @@
             >
                 <form id="form" dataContainer="scheduledReportDc"
                       childrenCaptionWidth="150px">
-                    <column width="250px">
+                    <column width="400px">
                         <pickerField id="reportField" property="report">
                             <actions>
                                 <action id="lookup" type="picker_lookup"/>
@@ -34,105 +34,119 @@
                         <textField id="nameField" property="name"/>
                         <textField id="codeField" property="code"/>
                         <checkBox id="activeField" property="active"/>
-                        <pickerField id="emailTemplateField" property="emailTemplate"/>
                     </column>
                 </form>
             </groupBox>
-            <groupBox id="frequencyGroupBox"
-                      caption="msg://frequency"
-                      width="100%"
-                      height="300px"
-            >
-                <form id="frequencyForm"
-                      dataContainer="scheduledReportDc"
-                      childrenCaptionWidth="150px"
+            <vbox spacing="true">
+                <groupBox id="emailConfigGroupBox"
+                          caption="msg://email"
+                          width="100%"
+                          height="136px"
                 >
-                    <column width="400px">
-                        <optionsGroup
-                                id="frequencyTypeField"
-                                property="frequency.frequency"
-                                dataContainer="scheduledReportDc"
-                                orientation="horizontal"
-                        />
-                        <hbox
-                                caption="msg://day"
-                                id="monthlyDayFields"
-                                spacing="true"
-                                width="100%"
-                                visible="false">
-                            <lookupField
-                                    id="monthlyDayField"
-                                    property="frequency.monthlyDay"
+                    <form id="emailForm" dataContainer="scheduledReportDc"
+                          childrenCaptionWidth="150px">
+                        <column width="400px">
+                            <checkBox id="sendEmailField" property="sendEmail"/>
+                            <pickerField id="emailTemplateField" property="emailTemplate" editable="false"/>
+                        </column>
+                    </form>
+                </groupBox>
+                <groupBox id="frequencyGroupBox"
+                          caption="msg://frequency"
+                          width="100%"
+                          height="150px"
+                >
+                    <form id="frequencyForm"
+                          dataContainer="scheduledReportDc"
+                          childrenCaptionWidth="150px"
+                    >
+                        <column width="400px">
+                            <optionsGroup
+                                    id="frequencyTypeField"
+                                    property="frequency.frequency"
                                     dataContainer="scheduledReportDc"
-                                    width="60px"/>
-                        </hbox>
-                        <hbox
-                                caption="msg://time"
-                                id="monthlyTimeFields"
-                                spacing="true"
-                                width="100%"
-                                expand="expandMonthlyTimeFields"
-                                visible="false">
-                            <lookupField
-                                    id="monthlyHourField"
-                                    property="frequency.monthlyHour"
-                                    dataContainer="scheduledReportDc"
-                                    width="60px"/>
-                            <label value=":"/>
-                            <lookupField
-                                    id="monthlyMinuteField"
-                                    property="frequency.monthlyMinute"
-                                    dataContainer="scheduledReportDc"
-                                    width="60px"/>
-                            <label id="expandMonthlyTimeFields" value=""/>
-                        </hbox>
-                        <hbox
-                                caption="msg://time"
-                                id="dailyTimeFields"
-                                spacing="true"
-                                visible="false"
-                                expand="expandDailyTimeFields">
-                            <lookupField
-                                    id="dailyHourField"
-                                    property="frequency.dailyHour"
-                                    dataContainer="scheduledReportDc"
-                                    width="60px"/>
-                            <label value=":"/>
-                            <lookupField
-                                    id="dailyMinuteField"
-                                    property="frequency.dailyMinute"
-                                    dataContainer="scheduledReportDc"
-                                    width="60px"/>
-                            <label id="expandDailyTimeFields" value=""/>
-                        </hbox>
-                        <hbox
-                                id="hourlyTimeFields"
-                                caption="msg://minute"
-                                spacing="true"
-                                width="100%"
-                                expand="expandHourlyTimeFields"
-                                visible="false">
-                            <lookupField
-                                    id="hourlyMinuteField"
-                                    property="frequency.hourlyMinute"
-                                    dataContainer="scheduledReportDc"
-                                    width="60px"/>
-                            <label id="expandHourlyTimeFields" value=""/>
-                        </hbox>
-                        <hbox
-                                id="customFields"
-                                caption="msg://cronExpression"
-                                spacing="true"
-                                width="100%"
-                                visible="false">
-                            <textField
-                                    id="customCronField"
-                                    property="frequency.customCron"
-                                    dataContainer="scheduledReportDc"/>
-                        </hbox>
-                    </column>
-                </form>
-            </groupBox>
+                                    orientation="horizontal"
+                            />
+                            <hbox
+                                    caption="msg://day"
+                                    id="monthlyDayFields"
+                                    spacing="true"
+                                    width="100%"
+                                    visible="false">
+                                <lookupField
+                                        id="monthlyDayField"
+                                        property="frequency.monthlyDay"
+                                        dataContainer="scheduledReportDc"
+                                        width="60px"/>
+                            </hbox>
+                            <hbox
+                                    caption="msg://time"
+                                    id="monthlyTimeFields"
+                                    spacing="true"
+                                    width="100%"
+                                    expand="expandMonthlyTimeFields"
+                                    visible="false">
+                                <lookupField
+                                        id="monthlyHourField"
+                                        property="frequency.monthlyHour"
+                                        dataContainer="scheduledReportDc"
+                                        width="60px"/>
+                                <label value=":"/>
+                                <lookupField
+                                        id="monthlyMinuteField"
+                                        property="frequency.monthlyMinute"
+                                        dataContainer="scheduledReportDc"
+                                        width="60px"/>
+                                <label id="expandMonthlyTimeFields" value=""/>
+                            </hbox>
+                            <hbox
+                                    caption="msg://time"
+                                    id="dailyTimeFields"
+                                    spacing="true"
+                                    visible="false"
+                                    expand="expandDailyTimeFields">
+                                <lookupField
+                                        id="dailyHourField"
+                                        property="frequency.dailyHour"
+                                        dataContainer="scheduledReportDc"
+                                        width="60px"/>
+                                <label value=":"/>
+                                <lookupField
+                                        id="dailyMinuteField"
+                                        property="frequency.dailyMinute"
+                                        dataContainer="scheduledReportDc"
+                                        width="60px"/>
+                                <label id="expandDailyTimeFields" value=""/>
+                            </hbox>
+                            <hbox
+                                    id="hourlyTimeFields"
+                                    caption="msg://minute"
+                                    spacing="true"
+                                    width="100%"
+                                    expand="expandHourlyTimeFields"
+                                    visible="false">
+                                <lookupField
+                                        id="hourlyMinuteField"
+                                        property="frequency.hourlyMinute"
+                                        dataContainer="scheduledReportDc"
+                                        width="60px"/>
+                                <label id="expandHourlyTimeFields" value=""/>
+                            </hbox>
+                            <hbox
+                                    id="customFields"
+                                    caption="msg://cronExpression"
+                                    spacing="true"
+                                    width="100%"
+                                    visible="false">
+                                <textField
+                                        id="customCronField"
+                                        property="frequency.customCron"
+                                        dataContainer="scheduledReportDc"/>
+                            </hbox>
+                        </column>
+                    </form>
+                </groupBox>
+            </vbox>
         </hbox>
         <hbox id="editActions" spacing="true">
             <button action="windowCommitAndClose"/>

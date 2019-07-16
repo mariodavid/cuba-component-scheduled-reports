@@ -1,13 +1,16 @@
 package de.diedavids.cuba.scheduledreports.web.screens.scheduledreport;
 
 import com.google.common.collect.Lists;
+import com.haulmont.addon.emailtemplates.entity.EmailTemplate;
 import com.haulmont.cuba.core.app.scheduled.MethodParameterInfo;
 import com.haulmont.cuba.core.entity.ScheduledTask;
 import com.haulmont.cuba.core.entity.ScheduledTaskDefinedBy;
 import com.haulmont.cuba.core.entity.SchedulingType;
+import com.haulmont.cuba.core.global.DataManager;
 import com.haulmont.cuba.gui.components.HBoxLayout;
 import com.haulmont.cuba.gui.components.HasValue;
 import com.haulmont.cuba.gui.components.LookupField;
+import com.haulmont.cuba.gui.components.PickerField;
 import com.haulmont.cuba.gui.model.DataContext;
 import com.haulmont.cuba.gui.screen.*;
 import com.haulmont.reports.entity.Report;
@@ -19,6 +22,7 @@ import de.diedavids.cuba.scheduledreports.web.ScheduledFrequencyCronGenerator;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static java.util.stream.IntStream.range;
@@ -29,6 +33,8 @@ import static java.util.stream.IntStream.range;
 @LoadDataBeforeShow
 public class ScheduledReportEdit extends StandardEditor<ScheduledReport> {
 
+    @Inject
+    protected DataManager dataManager;
 
     @Inject
     protected DataContext dataContext;
@@ -61,11 +67,16 @@ public class ScheduledReportEdit extends StandardEditor<ScheduledReport> {
     protected ScheduledFrequencyCronGenerator scheduledFrequencyCronGenerator;
     @Inject
     protected LookupField<ReportTemplate> reportTemplateLookupField;
+    @Inject
+    protected PickerField<EmailTemplate> emailTemplateField;
+    @Inject
+    protected MessageBundle messageBundle;
 
     @Subscribe("reportField")
     protected void onReportFieldValueChange(HasValue.ValueChangeEvent<Report> event) {
-        List<ReportTemplate> templates = getEditedEntity().getReport().getTemplates();
-        reportTemplateLookupField.setOptionsList(templates);
+        Report report = getEditedEntity().getReport();
+        Report reloadedReport = dataManager.reload(report, "report.edit");
+        reportTemplateLookupField.setOptionsList(reloadedReport.getTemplates());
     }
 
 
@@ -73,28 +84,28 @@ public class ScheduledReportEdit extends StandardEditor<ScheduledReport> {
     protected void onFrequencyOptionsGroupValueChange(HasValue.ValueChangeEvent event) {
 
         ScheduledFrequencyType value = (ScheduledFrequencyType) event.getValue();
-        if (value.equals(ScheduledFrequencyType.DAILY)) {
+        if (Objects.equals(value, ScheduledFrequencyType.DAILY)) {
             dailyTimeFields.setVisible(true);
             hourlyTimeFields.setVisible(false);
             monthlyTimeFields.setVisible(false);
             monthlyDayFields.setVisible(false);
             customFields.setVisible(false);
         }
-        else if (value.equals(ScheduledFrequencyType.HOURLY)){
+        else if (Objects.equals(value, ScheduledFrequencyType.HOURLY)){
             dailyTimeFields.setVisible(false);
             hourlyTimeFields.setVisible(true);
             monthlyTimeFields.setVisible(false);
             monthlyDayFields.setVisible(false);
             customFields.setVisible(false);
         }
-        else if (value.equals(ScheduledFrequencyType.MONTHLY)){
+        else if (Objects.equals(value, ScheduledFrequencyType.MONTHLY)){
             dailyTimeFields.setVisible(false);
             hourlyTimeFields.setVisible(false);
             monthlyTimeFields.setVisible(true);
             monthlyDayFields.setVisible(true);
             customFields.setVisible(false);
         }
-        else if (value.equals(ScheduledFrequencyType.CUSTOM)){
+        else if (Objects.equals(value, ScheduledFrequencyType.CUSTOM)){
             dailyTimeFields.setVisible(false);
             hourlyTimeFields.setVisible(false);
             monthlyTimeFields.setVisible(false);
@@ -103,7 +114,16 @@ public class ScheduledReportEdit extends StandardEditor<ScheduledReport> {
         }
     }
 
+    @Subscribe("sendEmailField")
+    protected void onSendEmailFieldValueChange(HasValue.ValueChangeEvent<Boolean> event) {
+        Boolean sendEmail = event.getValue();
+        emailTemplateField.setEditable(sendEmail);
+        emailTemplateField.setRequired(sendEmail);
+        emailTemplateField.setRequiredMessage(messageBundle.getMessage("emailTemplateRequiredIfSendEmailActive"));
+    }
 
+
+    
 
 
     @Subscribe

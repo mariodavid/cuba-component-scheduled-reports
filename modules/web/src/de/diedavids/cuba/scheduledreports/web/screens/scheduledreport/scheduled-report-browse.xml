@@ -18,6 +18,12 @@
                 width="800"/>
     <layout expand="scheduledReportsTable"
             spacing="true">
+        <label id="schedulingSystemInactiveBox"
+               value="msg://schedulingSystemInactive"
+               visible="false"
+               stylename="failure"
+               width="100%"
+        />
         <filter id="filter"
                 applyTo="scheduledReportsTable"
                 dataLoader="scheduledReportDl">
@@ -30,7 +36,11 @@
                 <action id="create" type="create"/>
                 <action id="edit" type="edit"/>
                 <action id="remove" type="remove"/>
-                <action id="executions" caption="msg://executions" trackSelection="true"/>
+                <action id="executions"
+                        caption="msg://executions"
+                        icon="font-icon:FILES_O"
+                        trackSelection="true"
+                />
             </actions>
             <columns>
                 <column id="report"/>
@@ -45,7 +55,7 @@
                 <button id="createBtn" action="scheduledReportsTable.create"/>
                 <button id="editBtn" action="scheduledReportsTable.edit"/>
                 <button id="removeBtn" action="scheduledReportsTable.remove"/>
-                <button id="executionsBtn" action="scheduledReportsTable.executions" />
+                <button id="executionsBtn" action="scheduledReportsTable.executions"/>
             </buttonsPanel>
         </groupTable>
         <hbox id="lookupActions" spacing="true" visible="false">

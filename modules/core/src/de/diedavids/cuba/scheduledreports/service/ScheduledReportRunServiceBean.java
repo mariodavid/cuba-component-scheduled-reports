@@ -1,5 +1,6 @@
 package de.diedavids.cuba.scheduledreports.service;
 
+import com.haulmont.cuba.core.app.ServerConfig;
 import com.haulmont.cuba.core.entity.FileDescriptor;
 import com.haulmont.cuba.core.global.DataManager;
 import com.haulmont.cuba.core.global.Events;
@@ -44,6 +45,14 @@ public class ScheduledReportRunServiceBean implements ScheduledReportRunService 
 
     @Inject
     protected ScheduledReportEmailing scheduledReportEmailing;
+
+    @Inject
+    protected ServerConfig serverConfig;
+
+    @Override
+    public boolean isSchedulingSystemActive() {
+        return serverConfig.getSchedulingActive();
+    }
 
     @Override
     public void runScheduledReport(String code) {

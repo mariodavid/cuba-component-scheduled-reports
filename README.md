@@ -45,6 +45,12 @@ The following databases are supported by this application component:
 * HSQLDB
 * PostgreSQL
 
+
+## Example usage
+
+To see this application component in action, check out this example: [cuba-example-using-scheduled-reports](https://github.com/mariodavid/cuba-example-using-scheduled-reports).
+
+
 ## Using the application component
 
 The `scheduled-reports` application component enriches the Reports main menu with ability to define `Scheduled Reports`.
@@ -53,10 +59,6 @@ A `Scheduled Report` consists mainly of a reference to the report instance, that
 that defines on how often the report should be executed.
 
 ![sales report scheduled report](https://github.com/mariodavid/cuba-example-using-scheduled-reports/blob/master/img/sales-report-scheduled-report.png)
-
-
-### Example usage
-To see this application component in action, check out this example: [cuba-example-using-scheduled-reports](https://github.com/mariodavid/cuba-example-using-scheduled-reports).
 
 
 ### Emailing Report

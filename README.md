@@ -9,8 +9,6 @@ This application component let's you schedule reports and execute them periodica
 It allows to define a schedule for a report to be executed. The target report file is stored CUBAs File Storage
 and additionally optionally can be send out via Email.
 
-![overview](https://github.com/mariodavid/cuba-component-scheduled-reports/blob/master/img/overview.gif)
-
 ## Installation
 
 1. `scheduled-reports` is available in the [CUBA marketplace](https://www.cuba-platform.com/marketplace/scheduled-reports)

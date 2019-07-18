@@ -4,7 +4,7 @@
 
 # CUBA Platform Application Component - Scheduled Reports
 
-This application component let's you schedule reports and execute them periodically.
+This application component lets you schedule reports and execute them periodically.
 
 It allows to define a schedule for a report to be executed. The target report file is stored CUBAs File Storage
 and optionally can be additionally send out via Email.

@@ -7,10 +7,9 @@ import com.haulmont.cuba.core.entity.ScheduledTask;
 import com.haulmont.cuba.core.entity.ScheduledTaskDefinedBy;
 import com.haulmont.cuba.core.entity.SchedulingType;
 import com.haulmont.cuba.core.global.DataManager;
-import com.haulmont.cuba.gui.components.HBoxLayout;
-import com.haulmont.cuba.gui.components.HasValue;
-import com.haulmont.cuba.gui.components.LookupField;
-import com.haulmont.cuba.gui.components.PickerField;
+import com.haulmont.cuba.core.global.Messages;
+import com.haulmont.cuba.gui.Dialogs;
+import com.haulmont.cuba.gui.components.*;
 import com.haulmont.cuba.gui.model.DataContext;
 import com.haulmont.cuba.gui.screen.*;
 import com.haulmont.reports.entity.Report;
@@ -26,6 +25,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static java.util.stream.IntStream.range;
+import static jdk.nashorn.internal.runtime.ECMAErrors.getMessage;
 
 @UiController("ddcsr_ScheduledReport.edit")
 @UiDescriptor("scheduled-report-edit.xml")
@@ -71,6 +71,10 @@ public class ScheduledReportEdit extends StandardEditor<ScheduledReport> {
     protected PickerField<EmailTemplate> emailTemplateField;
     @Inject
     protected MessageBundle messageBundle;
+    @Inject
+    protected Dialogs dialogs;
+    @Inject
+    protected Messages messages;
 
     @Subscribe("reportField")
     protected void onReportFieldValueChange(HasValue.ValueChangeEvent<Report> event) {
@@ -182,4 +186,16 @@ public class ScheduledReportEdit extends StandardEditor<ScheduledReport> {
         return dataContext.create(ScheduledTask.class);
     }
 
+    public void getCronHelp() {
+        dialogs.createMessageDialog(Dialogs.MessageType.CONFIRMATION)
+                .withContentMode(ContentMode.HTML)
+                .withCaption("Cron")
+                .withMessage(messages.getMessage(
+                        "com.haulmont.cuba.gui.app.core.scheduled",
+                        "cronDescription"
+                ))
+                .withWidth("500px")
+                .withModal(false)
+                .show();
+    }
 }

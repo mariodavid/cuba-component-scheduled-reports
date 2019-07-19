@@ -141,7 +141,14 @@
                                 <textField
                                         id="customCronField"
                                         property="frequency.customCron"
-                                        dataContainer="scheduledReportDc"/>
+                                        dataContainer="scheduledReportDc"
+                                        width="200px"
+                                />
+                                <linkButton
+                                        id="cronHelpButton"
+                                        icon="icons/question-white.png"
+                                        invoke="getCronHelp"
+                                            />
                             </hbox>
                         </column>
                     </form>

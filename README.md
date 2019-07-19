@@ -4,10 +4,10 @@
 
 # CUBA Platform Application Component - Scheduled Reports
 
-This application component let's you schedule reports and execute them periodically.
+This application component lets you schedule reports and execute them periodically.
 
 It allows to define a schedule for a report to be executed. The target report file is stored CUBAs File Storage
-and additionally optionally can be send out via Email.
+and optionally can be additionally send out via Email.
 
 ## Installation
 
@@ -19,7 +19,7 @@ and additionally optionally can be send out via Email.
 | 7.0.x            | 0.1.x          |
 
 
-The latest version is: [ ![Download](https://api.bintray.com/packages/mariodavid/cuba-components/cuba-component-scheduled-reports/images/download.svg) ](https://bintray.com/mariodavid/cuba-components/cuba-component-instant-launcher/_latestVersion)
+The latest version is: [ ![Download](https://api.bintray.com/packages/mariodavid/cuba-components/cuba-component-scheduled-reports/images/download.svg) ](https://bintray.com/mariodavid/cuba-components/cuba-component-scheduled-reports/_latestVersion)
 
 Add custom application component to your project:
 
@@ -35,16 +35,15 @@ dependencies {
 
 ### CHANGELOG
 
-Information on changes that happen through the different versions of the application component can be found in the [CHANGELOG](https://github.com/mariodavid/cuba-component-instant-launcher/blob/master/CHANGELOG.md).
+Information on changes that happen through the different versions of the application component can be found in the [CHANGELOG](https://github.com/mariodavid/cuba-component-scheduled-reports/blob/master/CHANGELOG.md).
 The Changelog also contains information about breaking changes and tips on how to resolve them.
 
 ## Supported DBMS
 
 The following databases are supported by this application component:
 
-* HSQLDB
 * PostgreSQL
-
+* HSQLDB (DB scripts are included, however CUBA 7.0 has problems with HSQLDB & scheduled taks - therefore it will probably not work before CUBA 7.1)
 
 ## Example usage
 

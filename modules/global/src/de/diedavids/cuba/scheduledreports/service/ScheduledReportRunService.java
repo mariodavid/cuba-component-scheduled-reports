@@ -5,5 +5,5 @@ public interface ScheduledReportRunService {
 
     boolean isSchedulingSystemActive();
 
-    void runScheduledReport(String code);
+    void runScheduledReport(String scheduledReportId);
 }

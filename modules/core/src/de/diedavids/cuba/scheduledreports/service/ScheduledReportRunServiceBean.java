@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service(ScheduledReportRunService.NAME)
 public class ScheduledReportRunServiceBean implements ScheduledReportRunService {
@@ -55,18 +56,38 @@ public class ScheduledReportRunServiceBean implements ScheduledReportRunService 
     }
 
     @Override
-    public void runScheduledReport(String code) {
+    public void runScheduledReport(String scheduledReportId) {
+        runReport(parseReportId(scheduledReportId));
+    }
 
-        ScheduledReport scheduledReport = scheduledReportRepository.loadByCode(code, "scheduled-report-with-executions");
+    private UUID parseReportId(String scheduledReportId) {
+        try {
+            return UUID.fromString(scheduledReportId);
+        }
+        catch (Exception e) {
+            log.error("Scheduled Report ID is not a valid UUID");
+            throw e;
+        }
+    }
 
-        runReport(scheduledReport);
+    private void runReport(UUID scheduledReportId) {
+        Optional<ScheduledReport> scheduledReport = scheduledReportRepository.loadById(scheduledReportId, "scheduled-report-with-executions");
+
+        if (scheduledReport.isPresent()) {
+            runReport(scheduledReport.get());
+        }
+        else {
+            log.error("Scheduled report with ID not found: {}. Scheduled Report cannot be executed", scheduledReportId);
+        }
     }
 
     private void runReport(ScheduledReport scheduledReport) {
 
         ScheduledReportExecution scheduledReportExecution = createExecution(scheduledReport);
 
-        boolean shouldBeExecuted = getExtension(scheduledReport).shouldBeExecuted(scheduledReport);
+        ScheduledReportExtension extension = getExtension(scheduledReport);
+        boolean shouldBeExecuted = extension
+                .shouldBeExecuted(scheduledReport);
 
         if (shouldBeExecuted) {
             doRunReport(scheduledReport, scheduledReportExecution);

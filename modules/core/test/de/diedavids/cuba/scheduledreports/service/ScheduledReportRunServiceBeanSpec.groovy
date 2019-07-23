@@ -18,19 +18,21 @@ import de.diedavids.cuba.scheduledreports.events.ScheduledReportRun
 import spock.lang.Specification
 
 class ScheduledReportRunServiceBeanSpec extends Specification {
-    private ScheduledReportExtensionFactory scheduledReportExtensionFactory
-    private ScheduledReportRepository scheduledReportRepository
-    private ReportingApi reportingApi
-    private ScheduledReportRunServiceBean sut
-    private DataManager dataManager
-    private Events events
-    private ScheduledReportEmailing scheduledReportEmailing
-    private ScheduledReportExecution scheduledReportExecution
+
+    ScheduledReportExtensionFactory scheduledReportExtensionFactory
+    ScheduledReportRepository scheduledReportRepository
+    ReportingApi reportingApi
+    ScheduledReportRunServiceBean sut
+    DataManager dataManager
+    Events events
+    ScheduledReportEmailing scheduledReportEmailing
+    ScheduledReportExecution scheduledReportExecution
 
 
     def setup() {
         scheduledReportRepository = Mock(ScheduledReportRepository)
         scheduledReportExtensionFactory = Mock(ScheduledReportExtensionFactory)
+        scheduledReportExtensionFactory.create(_) >> new DefaultScheduledReportParameterExtension()
         reportingApi = Mock(ReportingApi)
 
         dataManager = Mock(DataManager)
@@ -58,21 +60,23 @@ class ScheduledReportRunServiceBeanSpec extends Specification {
                 defaultTemplate: new ReportTemplate()
         )
 
-        def scheduledReport = new ScheduledReport(
-                report: report
-        )
+        def scheduledReport = scheduledReportFor(report)
 
         and:
-        scheduledReportRepository.loadByCode('my_report', _) >> scheduledReport
+        scheduledReportIsFound(scheduledReport)
 
         and:
-        scheduledReportExtensionFactory.create(scheduledReport) >> new DefaultScheduledReportParameterExtension()
+
 
         when:
-        sut.runScheduledReport('my_report')
+        runScheduledReport(scheduledReport)
 
         then:
         1 * reportingApi.createAndSaveReport(report, _,_,_)
+    }
+
+    def runScheduledReport(ScheduledReport scheduledReport) {
+        sut.runScheduledReport(scheduledReport.id.toString())
     }
 
     def "runScheduledReport stores the created file descriptor in the execution instance"() {
@@ -83,12 +87,10 @@ class ScheduledReportRunServiceBeanSpec extends Specification {
                 defaultTemplate: new ReportTemplate()
         )
 
-        def scheduledReport = new ScheduledReport(
-                report: report
-        )
+        def scheduledReport = scheduledReportFor(report)
 
         and:
-        scheduledReportRepository.loadByCode('my_report', _) >> scheduledReport
+        scheduledReportIsFound(scheduledReport)
 
         and:
         scheduledReportExtensionFactory.create(scheduledReport) >> new DefaultScheduledReportParameterExtension()
@@ -99,12 +101,16 @@ class ScheduledReportRunServiceBeanSpec extends Specification {
         reportingApi.createAndSaveReport(report, _,_,_) >> storedFileDescriptor
 
         when:
-        sut.runScheduledReport('my_report')
+        runScheduledReport(scheduledReport)
 
         then:
         1 * dataManager.commit({ ScheduledReportExecution execution ->
             execution.reportFile == storedFileDescriptor
         })
+    }
+
+    private void scheduledReportIsFound(ScheduledReport scheduledReport) {
+        scheduledReportRepository.loadById(_, _) >> Optional.of(scheduledReport)
     }
 
     def "runScheduledReport sends out a notification once report was run"() {
@@ -115,12 +121,10 @@ class ScheduledReportRunServiceBeanSpec extends Specification {
                 defaultTemplate: new ReportTemplate()
         )
 
-        def scheduledReport = new ScheduledReport(
-                report: report
-        )
+        def scheduledReport = scheduledReportFor(report)
 
         and:
-        scheduledReportRepository.loadByCode('my_report', _) >> scheduledReport
+        scheduledReportIsFound(scheduledReport)
 
         and:
         scheduledReportExtensionFactory.create(scheduledReport) >> new DefaultScheduledReportParameterExtension()
@@ -131,7 +135,7 @@ class ScheduledReportRunServiceBeanSpec extends Specification {
         reportingApi.createAndSaveReport(report, _,_,_) >> storedFileDescriptor
 
         when:
-        sut.runScheduledReport('my_report')
+        runScheduledReport(scheduledReport)
 
         then:
         1 * events.publish({ ScheduledReportRun event ->
@@ -140,6 +144,7 @@ class ScheduledReportRunServiceBeanSpec extends Specification {
             event.reportExecution.successful == true
         })
     }
+
     def "runScheduledReport sends out a notification even if execution failed"() {
 
         given:
@@ -148,12 +153,10 @@ class ScheduledReportRunServiceBeanSpec extends Specification {
                 defaultTemplate: new ReportTemplate()
         )
 
-        def scheduledReport = new ScheduledReport(
-                report: report
-        )
+        def scheduledReport = scheduledReportFor(report)
 
         and:
-        scheduledReportRepository.loadByCode('my_report', _) >> scheduledReport
+        scheduledReportIsFound(scheduledReport)
 
         and:
         scheduledReportExtensionFactory.create(scheduledReport) >> new DefaultScheduledReportParameterExtension()
@@ -162,7 +165,7 @@ class ScheduledReportRunServiceBeanSpec extends Specification {
         reportingApi.createAndSaveReport(report, _,_,_) >> {throw new RuntimeException("did not work")}
 
         when:
-        sut.runScheduledReport('my_report')
+        runScheduledReport(scheduledReport)
 
         then:
         1 * events.publish({ ScheduledReportRun event ->
@@ -171,34 +174,41 @@ class ScheduledReportRunServiceBeanSpec extends Specification {
             event.reportExecution.successful == false
         })
     }
+
     def "runScheduledReport triggers email sending for a scheduled report with activated email"() {
 
         given:
-
         def report = new Report(
                 defaultTemplate: new ReportTemplate(),
         )
 
         def emailTemplate = new JsonEmailTemplate()
-        def scheduledReport = new ScheduledReport(
-                report: report,
-                emailTemplate: emailTemplate,
-                sendEmail: true
-        )
 
         and:
-        scheduledReportRepository.loadByCode('my_report', _) >> scheduledReport
+        def scheduledReport = scheduledReportFor(report)
+        scheduledReport.sendEmail = true
+        scheduledReport.emailTemplate = emailTemplate
+
+        and:
+        scheduledReportIsFound(scheduledReport)
 
         and:
         scheduledReportExtensionFactory.create(scheduledReport) >> new DefaultScheduledReportParameterExtension()
 
         and:
-        reportingApi.createAndSaveReport(report, _,_,_) >> Mock(FileDescriptor)
+        reportingApi.createAndSaveReport(report,_,_,_) >> Mock(FileDescriptor)
 
         when:
-        sut.runScheduledReport('my_report')
+        runScheduledReport(scheduledReport)
 
         then:
         1 * scheduledReportEmailing.sendEmailForScheduledReport(emailTemplate, scheduledReportExecution)
+    }
+
+    private ScheduledReport scheduledReportFor(Report report) {
+        new ScheduledReport(
+                id: UUID.randomUUID(),
+                report: report
+        )
     }
 }

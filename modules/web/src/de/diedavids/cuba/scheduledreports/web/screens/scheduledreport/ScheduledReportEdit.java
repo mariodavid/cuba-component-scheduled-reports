@@ -25,7 +25,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static java.util.stream.IntStream.range;
-import static jdk.nashorn.internal.runtime.ECMAErrors.getMessage;
 
 @UiController("ddcsr_ScheduledReport.edit")
 @UiDescriptor("scheduled-report-edit.xml")
@@ -164,7 +163,7 @@ public class ScheduledReportEdit extends StandardEditor<ScheduledReport> {
         scheduledTask.setMethodName("runScheduledReport");
 
         ArrayList<MethodParameterInfo> parameter = Lists.newArrayList(
-                new MethodParameterInfo("java.lang.String", "code", scheduledReport.getCode())
+                new MethodParameterInfo("java.lang.String", "scheduledReportId", scheduledReport.getId().toString())
         );
         scheduledTask.updateMethodParameters(parameter);
         scheduledTask.setCron(cronExpression);

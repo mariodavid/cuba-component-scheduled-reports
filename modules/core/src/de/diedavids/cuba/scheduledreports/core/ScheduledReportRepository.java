@@ -5,6 +5,8 @@ import de.diedavids.cuba.scheduledreports.entity.ScheduledReport;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import java.util.Optional;
+import java.util.UUID;
 
 @Component(ScheduledReportRepository.NAME)
 public class ScheduledReportRepository {
@@ -19,5 +21,12 @@ public class ScheduledReportRepository {
                 .parameter("code", code)
                 .view(view)
                 .one();
+    }
+
+    public Optional<ScheduledReport> loadById(UUID scheduledReportId, String view) {
+        return dataManager.load(ScheduledReport.class)
+                .id(scheduledReportId)
+                .view(view)
+                .optional();
     }
 }

@@ -50,9 +50,7 @@ class ScheduledReportRunServiceBeanReportTemplateExtensionSpec extends Specifica
                 defaultTemplate: defaultReportTemplate
         )
 
-        def scheduledReport = new ScheduledReport(
-                report: report
-        )
+        def scheduledReport = scheduledReportFor(report)
 
         and:
         scheduledReportIsFound(scheduledReport)
@@ -61,10 +59,21 @@ class ScheduledReportRunServiceBeanReportTemplateExtensionSpec extends Specifica
         defaultExtensionIsUsed()
 
         when:
-        sut.runScheduledReport('my_report')
+        runScheduledReport(scheduledReport)
 
         then:
         1 * reportingApi.createAndSaveReport(report, defaultReportTemplate,_,_)
+    }
+
+    private runScheduledReport(ScheduledReport scheduledReport) {
+        sut.runScheduledReport(scheduledReport.id.toString())
+    }
+
+    private ScheduledReport scheduledReportFor(Report report) {
+        new ScheduledReport(
+                id: UUID.randomUUID(),
+                report: report
+        )
     }
 
     def "runScheduledReport uses the configured UI report template from the scheduled report over the reports default if provided"() {
@@ -77,18 +86,17 @@ class ScheduledReportRunServiceBeanReportTemplateExtensionSpec extends Specifica
 
         def scheduledReportReportTemplate = new ReportTemplate()
 
-        def scheduledReport = new ScheduledReport(
-                report: report,
-                reportTemplate: scheduledReportReportTemplate
-        )
+        def scheduledReport = scheduledReportFor(report)
+        scheduledReport.reportTemplate = scheduledReportReportTemplate
 
         and:
         scheduledReportIsFound(scheduledReport)
+
         and:
         defaultExtensionIsUsed()
 
         when:
-        sut.runScheduledReport('my_report')
+        runScheduledReport(scheduledReport)
 
         then:
         1 * reportingApi.createAndSaveReport(report, scheduledReportReportTemplate,_,_)
@@ -105,10 +113,8 @@ class ScheduledReportRunServiceBeanReportTemplateExtensionSpec extends Specifica
 
         def scheduledReportReportTemplate = new ReportTemplate()
 
-        def scheduledReport = new ScheduledReport(
-                report: report,
-                reportTemplate: scheduledReportReportTemplate
-        )
+        def scheduledReport = scheduledReportFor(report)
+        scheduledReport.reportTemplate = scheduledReportReportTemplate
 
         and:
         scheduledReportIsFound(scheduledReport)
@@ -124,7 +130,7 @@ class ScheduledReportRunServiceBeanReportTemplateExtensionSpec extends Specifica
         ))
 
         when:
-        sut.runScheduledReport('my_report')
+        runScheduledReport(scheduledReport)
 
         then:
         1 * reportingApi.createAndSaveReport(report, extensionReportTemplate,_,_)
@@ -139,7 +145,7 @@ class ScheduledReportRunServiceBeanReportTemplateExtensionSpec extends Specifica
     }
 
     private void scheduledReportIsFound(ScheduledReport scheduledReport) {
-        scheduledReportRepository.loadByCode('my_report', _) >> scheduledReport
+        scheduledReportRepository.loadById(scheduledReport.id, _) >> Optional.of(scheduledReport)
     }
 
 }

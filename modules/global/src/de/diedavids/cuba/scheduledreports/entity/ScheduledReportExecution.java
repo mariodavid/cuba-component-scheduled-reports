@@ -22,7 +22,7 @@ public class ScheduledReportExecution extends StandardEntity {
     @Column(name = "SUCCESSFUL_")
     protected Boolean successful;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @NotNull
     @Column(name = "EXECUTED_AT", nullable = false)
     protected Date executedAt;

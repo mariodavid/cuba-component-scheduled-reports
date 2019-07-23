@@ -43,7 +43,7 @@ create table DDCSR_SCHEDULED_REPORT_EXEC (
     --
     SCHEDULED_REPORT_ID varchar(36) not null,
     SUCCESSFUL_ boolean,
-    EXECUTED_AT date not null,
+    EXECUTED_AT timestamp not null,
     REPORT_FILE_ID varchar(36),
     --
     primary key (ID)

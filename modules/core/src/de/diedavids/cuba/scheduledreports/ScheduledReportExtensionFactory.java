@@ -3,7 +3,6 @@ package de.diedavids.cuba.scheduledreports;
 import com.haulmont.cuba.core.global.BeanLocator;
 import de.diedavids.cuba.scheduledreports.core.DefaultScheduledReportParameterExtension;
 import de.diedavids.cuba.scheduledreports.entity.ScheduledReport;
-import groovy.util.logging.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -11,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Component("ddcsr_LauncherCommandExecutorFactory")
 public class ScheduledReportExtensionFactory {
 

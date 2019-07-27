@@ -42,6 +42,9 @@ public class ScheduledReport extends StandardEntity {
     @Column(name = "CODE")
     protected String code;
 
+    @Column(name = "DESCRIPTION", length = 4000)
+    protected String description;
+
     @Column(name = "ACTIVE")
     protected Boolean active;
 
@@ -69,6 +72,14 @@ public class ScheduledReport extends StandardEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "EMAIL_TEMPLATE_ID")
     protected EmailTemplate emailTemplate;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public Boolean getSendEmail() {
         return sendEmail;

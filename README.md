@@ -7,7 +7,7 @@
 This application component lets you schedule reports and execute them periodically.
 
 It allows to define a schedule for a report to be executed. The target report file is stored CUBAs File Storage
-and optionally can be additionally send out via Email.
+and optionally can be additionally sent out via Email.
 
 ## Installation
 
@@ -63,10 +63,11 @@ that defines on how often the report should be executed.
 ### Emailing Report
 
 Besides the file generation itself, it is also possible to send out the report via email. In order to do this, a Email template
-can be defined, that includes information on the receivers, the Email subject and body etc. The report file is attached
-to the email.
+can be defined, that includes information on the receivers, the Email subject and body etc. The report file is attached to the email.
 
 ![sales report scheduled email template](https://github.com/mariodavid/cuba-example-using-scheduled-reports/blob/master/img/sales-report-email-template.png)
+
+NOTE: CUBA's Email subsystem needs a configured scheduled task which executes `EmailerAPI.processQueuedEmails()` periodically. See: [CUBA Emailing Sending documentation](https://doc.cuba-platform.com/manual-7.0/sending_emails_recipe.html) for more information
 
 ### Programmatic Scheduled Report Extensions
 

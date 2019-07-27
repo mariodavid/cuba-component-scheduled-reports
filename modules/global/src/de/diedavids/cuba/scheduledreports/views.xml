@@ -21,6 +21,6 @@
     <view entity="ddcsr_ScheduledReportExecution" name="scheduledReportExecution-view" extends="_local">
         <property name="scheduledReport" view="_minimal"/>
         <property name="reportFile" view="_minimal"/>
-        <property name="sendingMessages" view="_local" />s
+        <property name="sendingMessages" view="_local" />
     </view>
 </views>

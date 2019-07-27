@@ -35,7 +35,7 @@ public class ScheduledReportEmailing {
 
     public void sendEmailForScheduledReport(EmailTemplate emailTemplate, ScheduledReportExecution scheduledReportExecution){
 
-        log.info("Email for scheduled report is send");
+        log.info("Email for scheduled report is sent: {}", scheduledReportExecution.getScheduledReport());
         EmailTemplate reloadedEmailTemplate = dataManager.reload(emailTemplate, "emailTemplate-view");
         try {
 

@@ -46,6 +46,7 @@
                 <column id="report"/>
                 <column id="name"/>
                 <column id="code"/>
+                <column id="description" maxTextLength="50"/>
                 <column id="frequency"/>
                 <column id="active"/>
             </columns>

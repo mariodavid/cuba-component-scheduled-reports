@@ -161,6 +161,7 @@ public class ScheduledReportEdit extends StandardEditor<ScheduledReport> {
         scheduledTask.setDefinedBy(ScheduledTaskDefinedBy.BEAN);
         scheduledTask.setBeanName("ddcsr_ScheduledReportRunService");
         scheduledTask.setMethodName("runScheduledReport");
+        scheduledTask.setSingleton(true);
 
         ArrayList<MethodParameterInfo> parameter = Lists.newArrayList(
                 new MethodParameterInfo("java.lang.String", "scheduledReportId", scheduledReport.getId().toString())

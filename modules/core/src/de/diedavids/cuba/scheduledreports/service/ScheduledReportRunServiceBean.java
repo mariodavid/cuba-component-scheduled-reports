@@ -65,7 +65,7 @@ public class ScheduledReportRunServiceBean implements ScheduledReportRunService 
             return UUID.fromString(scheduledReportId);
         }
         catch (Exception e) {
-            log.error("Scheduled Report ID is not a valid UUID");
+            log.error("Scheduled Report ID: {} is not a valid UUID", scheduledReportId);
             throw e;
         }
     }

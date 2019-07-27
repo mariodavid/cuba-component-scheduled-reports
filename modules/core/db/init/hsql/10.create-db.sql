@@ -23,6 +23,7 @@ create table DDCSR_SCHEDULED_REPORT (
     SCHEDULED_TASK_ID varchar(36) not null,
     NAME varchar(255) not null,
     CODE varchar(255),
+    DESCRIPTION varchar(4000),
     ACTIVE boolean,
     SEND_EMAIL boolean,
     EMAIL_TEMPLATE_ID varchar(36),

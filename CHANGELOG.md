@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Dependencies
 - CUBA 7.1.x
 - Reports 7.1.x
-- Email Template 1.1.3
+- Email Template 1.2.0
 
 ## [0.1.2] - 2019-07-27
 

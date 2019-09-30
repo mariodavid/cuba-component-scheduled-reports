@@ -16,6 +16,7 @@ and optionally can be additionally sent out via Email.
 
 | Platform Version | Add-on Version |
 | ---------------- | -------------- |
+| 7.1.x            | 0.2.x          |
 | 7.0.x            | 0.1.x          |
 
 

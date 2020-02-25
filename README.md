@@ -46,6 +46,8 @@ The following databases are supported by this application component:
 * PostgreSQL
 * HSQLDB (DB scripts are included, however CUBA 7.0 has problems with HSQLDB & scheduled taks - therefore it will probably not work before CUBA 7.1)
 
+All other DBMS systems are also possible to work with by the fact that CUBA studio generates the corresponding init / update scripts within the application.
+
 ## Example usage
 
 To see this application component in action, check out this example: [cuba-example-using-scheduled-reports](https://github.com/mariodavid/cuba-example-using-scheduled-reports).

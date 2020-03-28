@@ -16,6 +16,7 @@ and optionally can be additionally sent out via Email.
 
 | Platform Version | Add-on Version |
 | ---------------- | -------------- |
+| 7.2.x            | 0.3.x          |
 | 7.1.x            | 0.2.x          |
 | 7.0.x            | 0.1.x          |
 
@@ -44,7 +45,8 @@ The Changelog also contains information about breaking changes and tips on how t
 The following databases are supported by this application component:
 
 * PostgreSQL
-* HSQLDB (DB scripts are included, however CUBA 7.0 has problems with HSQLDB & scheduled taks - therefore it will probably not work before CUBA 7.1)
+* HSQLDB
+* MySQL
 
 All other DBMS systems are also possible to work with by the fact that CUBA studio generates the corresponding init / update scripts within the application.
 
